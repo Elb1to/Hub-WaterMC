@@ -1,0 +1,6 @@
+name: Hub
+main: me.elb1to.watermc.hub.Hub
+author: Elb1to
+version: ${project.version}
+website: www.frozed.club
+description: WaterMC's Hubcore made by Elb1to
