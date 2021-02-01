@@ -1,4 +1,4 @@
-package me.elb1to.watermc.hub.managers.vault;
+package me.elb1to.watermc.hub.managers;
 
 import me.elb1to.watermc.hub.Hub;
 import net.milkbowl.vault.chat.Chat;
