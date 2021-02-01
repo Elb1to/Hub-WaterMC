@@ -1,0 +1,9 @@
+MONGO:
+  HOST: 'localhost'
+  PORT: 27017
+  DATABASE: 'hub_watermc'
+  AUTH:
+    ENABLED: false
+    USERNAME: 'admin'
+    PASSWORD: 'password'
+    AUTH-DATABASE: 'admin'
