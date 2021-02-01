@@ -12,6 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * Command Framework - BukkitCompleter <br>
+ * An implementation of the TabCompleter class allowing for multiple tab
+ * completers per command
+ *
+ * @author minnymin3
+ */
 public class BukkitCompleter implements TabCompleter {
 
 	private Map<String, Entry<Method, Object>> completers = new HashMap<>();
@@ -37,7 +44,11 @@ public class BukkitCompleter implements TabCompleter {
 				Entry<Method, Object> entry = completers.get(cmdLabel);
 				try {
 					return (List<String>) entry.getKey().invoke(entry.getValue(), new CommandArgs(sender, command, label, args, cmdLabel.split("\\.").length - 1));
-				} catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException e) {
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
 					e.printStackTrace();
 				}
 			}
