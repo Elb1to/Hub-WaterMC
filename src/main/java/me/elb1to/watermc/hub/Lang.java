@@ -46,9 +46,6 @@ public enum Lang {
 			case SETTINGS:
 				fileConfig = plugin.getSettingsConfig();
 				break;
-			case SCOREBOARD:
-				fileConfig = plugin.getScoreboardConfig();
-				break;
 			case MESSAGES:
 				fileConfig = plugin.getMessagesConfig();
 				break;
