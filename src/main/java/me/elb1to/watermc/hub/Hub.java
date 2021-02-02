@@ -49,7 +49,7 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 	private QueueManager queueManager;
 
 	private MongoDbManager mongoDbManager;
-	private FileConfig settingsConfig, databaseConfig, queuesConfig, messagesConfig, scoreboardConfig, tablistConfig, hotbarConfig, armorConfig;
+	private FileConfig settingsConfig, databaseConfig, queuesConfig, messagesConfig, hotbarConfig, armorConfig;
 
 	@Setter private boolean restarting = false;
 	private PlayerDataWorkerRunnable playerDataWorkerRunnable;
@@ -68,11 +68,9 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 		this.armorConfig = new FileConfig(this, "armor.yml");
 		this.hotbarConfig = new FileConfig(this, "hotbar.yml");
 		this.queuesConfig = new FileConfig(this, "queues.yml");
-		this.tablistConfig = new FileConfig(this, "tablist.yml");
 		this.databaseConfig = new FileConfig(this, "database.yml");
 		this.settingsConfig = new FileConfig(this, "settings.yml");
 		this.messagesConfig = new FileConfig(this, "messages.yml");
-		this.scoreboardConfig = new FileConfig(this, "scoreboard.yml");
 
 		new QueueCommand();
 		new QueueInfoCommand();

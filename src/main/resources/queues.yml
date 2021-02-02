@@ -1,0 +1,17 @@
+QUEUE:
+  PRACTICE:
+    SERVER: "Practice"
+    BUNGEE-SERVER: "na-practice"
+    BYPASS-RESTRICTION-PERMISSION: "bypass.restriction.practice"
+    BYPASS-QUEUE-PERMISSION: "bypass.survival"
+    SEND-EVERY: 5 # SECONDS
+    DEFAULT-PRIORITY: 50
+    LIMIT: 300
+  SKYWARS:
+    SERVER: "SkyWars"
+    BUNGEE-SERVER: "SkyWars"
+    BYPASS-RESTRICTION-PERMISSION: "bypass.restriction.skywars"
+    BYPASS-QUEUE-PERMISSION: "bypass.skywars"
+    SEND-EVERY: 5 # SECONDS
+    DEFAULT-PRIORITY: 50
+    LIMIT: 300

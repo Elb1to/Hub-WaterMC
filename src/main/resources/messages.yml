@@ -1,0 +1,43 @@
+COMMAND:
+  NO-PERMISSION: "&cYou do not have access to execute this command."
+  ONLY-PLAYER: "&cYou must be player to execute this command."
+
+PLAYER:
+  NOT-FOUND: "&cA player with that name could not be found."
+  NOT-QUEUEING: "&cThat player is not queueing for any server."
+  NO-COSMETIC-PERMISSION: '&cYou don''t have this cosmetic.'
+  QUEUE-CHECK:
+    - ""
+    - "&b{PLAYERNAME}&f's Queue Info"
+    - " &3- &bServer: &f{QUEUE-NAME}"
+    - " &3- &bBungee: &f{QUEUE-BUNGEE-NAME}"
+    - " &3- &bPosition: &f{QUEUE-POSITION}"
+    - ""
+
+QUEUE:
+  NOT-FOUND: "&cA queue with that name could not be found."
+  FULL: "&cQueue '{QUEUE-NAME}' is currently full, buy a VIP Rank at store.tinchx.dev to bypass this restriction."
+  BEING-SENT: "&aYou're being sent to {QUEUE-NAME}." # {QUEUE-BUNGEE-NAME} {QUEUE-NAME}
+  JOINED: "&aYou're now queueing for {QUEUE-NAME}." # {QUEUE-BUNGEE-NAME} {QUEUE-NAME}
+  LEFT: "&cYou're no longer queueing for {QUEUE-NAME}." # {QUEUE-BUNGEE-NAME} {QUEUE-NAME}
+  ALREADY-QUEUEING: "&cYou're already queueing for {QUEUE-NAME}."
+  NOT-QUEUEING: "&cYou're not queueing for any server."
+  PAUSED: "&cQueue for {QUEUE-NAME} has been paused."
+  UN-PAUSED: "&aQueue for {QUEUE-NAME} has been resumed."
+  LIMIT: "&aLimit set {QUEUE-LIMIT} for {QUEUE-NAME}."
+  STATUS:
+    PAUSED: " &3- &bPaused: &aYes"
+    UN-PAUSED: " &3- &bPaused: &cNo"
+  QUEUEING-INFO:
+    - ""
+    - "&fYou're on position &b&l#{QUEUE-POSITION} &fof &3&l#{QUEUE-SIZE} &ffor &b{QUEUE-NAME}&f."
+    - "&fVisit our store and buy the TOP Rank to &aBYPASS &fthis queue."
+    - ""
+  QUEUE-INFO:
+    - ""
+    - "&b{QUEUE-NAME}&f's Queue Info"
+    - " &3- &bBungee: &f{QUEUE-BUNGEE-NAME}"
+    - " &3- &bLimit: &f{QUEUE-LIMIT}"
+    - " &3- &bPlayers: &f{QUEUE-SIZE}"
+    - "{QUEUE-STATUS}"
+    - ""
