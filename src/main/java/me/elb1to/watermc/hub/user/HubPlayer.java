@@ -31,9 +31,11 @@ public class HubPlayer {
 	private boolean dataLoaded;
 	private PlayerState state;
 
-	private boolean hasCosmetic;
 	private String currentArmor;
 	private String currentParticle;
+
+	private boolean hidingParticles = false;
+	private boolean hidingPlayers = false;
 
 	public HubPlayer(UUID uuid, String name) {
 		this.uuid = uuid;
@@ -74,6 +76,9 @@ public class HubPlayer {
 		if (document != null) {
 			this.currentArmor = document.getString("currentArmor");
 			this.currentParticle = document.getString("currentParticle");
+
+			this.hidingPlayers = document.getBoolean("hidingPlayers");
+			this.hidingParticles = document.getBoolean("hidingParticles");
 		}
 
 		this.dataLoaded = true;
@@ -92,6 +97,9 @@ public class HubPlayer {
 
 		document.put("currentArmor", this.currentArmor);
 		document.put("currentParticle", this.currentParticle);
+
+		document.put("hidingPlayers",this.hidingPlayers);
+		document.put("hidingParticles",this.hidingParticles);
 
 		playersDataNames.remove(this.name);
 		playersData.remove(this.uuid);
