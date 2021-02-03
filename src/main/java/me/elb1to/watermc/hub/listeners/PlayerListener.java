@@ -98,17 +98,19 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void onPlayerKickEvent(PlayerKickEvent event) {
-		saveData(event.getPlayer());
+		Player player = event.getPlayer();
+		saveData(player);
 	}
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		saveData(event.getPlayer());
+		Player player = event.getPlayer();
+		saveData(player);
 		event.setQuitMessage(null);
 
 		if (manager.isQueueing(event.getPlayer())) {
-			Queue queue = manager.getPlayerQueue(event.getPlayer());
-			queue.remove(event.getPlayer());
+			Queue queue = manager.getPlayerQueue(player);
+			queue.remove(player);
 		}
 	}
 
@@ -120,17 +122,17 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void onItemInteraction(PlayerInteractEvent event) {
+		Player player = event.getPlayer();
+		HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (event.getItem() != null && event.getItem().getItemMeta() != null && event.getItem().getItemMeta().getDisplayName() != null) {
 				if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(CC.translate("&b&lServidores &8(&7Click-Derecho&8)"))) {
 					//new SettingsMenu().openMenu(event.getPlayer());
-					event.getPlayer().sendMessage(CC.translate("Abrir selector de modos -> CraftPlayer{}"));
+					player.sendMessage(CC.translate("Abrir selector de modos -> CraftPlayer{}"));
 				}
 				if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(CC.translate("&b&lOpciones &8(&7Click-Derecho&8)"))) {
-					new SettingsMenu().openMenu(event.getPlayer());
-				}
-				if (event.getItem().getType().equals(Material.REDSTONE_COMPARATOR)) {
-					new SettingsMenu().openMenu(event.getPlayer());
+					new SettingsMenu(hubPlayer).openMenu(player);
 				}
 			}
 		}
