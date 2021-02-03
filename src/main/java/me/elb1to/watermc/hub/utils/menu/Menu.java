@@ -3,7 +3,6 @@ package me.elb1to.watermc.hub.utils.menu;
 import lombok.Getter;
 import lombok.Setter;
 import me.elb1to.watermc.hub.Hub;
-import me.elb1to.watermc.hub.utils.menu.pagination.PaginatedMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -58,25 +57,14 @@ public abstract class Menu {
 				player.closeInventory();
 			} else {
 				int previousSize = player.getOpenInventory().getTopInventory().getSize();
-				if (previousSize == size) {
-					if (this instanceof PaginatedMenu) {
-						inventory = player.getOpenInventory().getTopInventory();
-						update = true;
-					} else if (player.getOpenInventory().getTopInventory().getTitle().equals(title)) {
-						inventory = player.getOpenInventory().getTopInventory();
-						update = true;
-					} else {
-						previousMenu.setClosedByMenu(true);
-						player.closeInventory();
-					}
+
+				if (previousSize == size && player.getOpenInventory().getTopInventory().getTitle().equals(title)) {
+					inventory = player.getOpenInventory().getTopInventory();
+					update = true;
+				} else {
+					previousMenu.setClosedByMenu(true);
+					player.closeInventory();
 				}
-                /*if (previousSize == size && player.getOpenInventory().getTopInventory().getTitle().equals(title)) {
-                    inventory = player.getOpenInventory().getTopInventory();
-                    update = true;
-                } else {
-                    previousMenu.setClosedByMenu(true);
-                    player.closeInventory();
-                }*/
 			}
 		}
 

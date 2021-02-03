@@ -1,7 +1,6 @@
 package me.elb1to.watermc.hub.utils.menu;
 
 import me.elb1to.watermc.hub.Hub;
-import me.elb1to.watermc.hub.utils.menu.pagination.PaginatedMenu;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,7 +21,6 @@ public class ButtonListener implements Listener {
 	public void onButtonPress(InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
 		Menu openMenu = Menu.currentlyOpenedMenus.get(player.getName());
-
 		if (openMenu != null) {
 			if (event.getSlot() != event.getRawSlot()) {
 				if ((event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT)) {
@@ -34,9 +32,9 @@ public class ButtonListener implements Listener {
 			if (openMenu.getButtons().containsKey(event.getSlot())) {
 				Button button = openMenu.getButtons().get(event.getSlot());
 				boolean cancel = button.shouldCancel(player, event.getSlot(), event.getClick());
-				if (!cancel && (event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT)) {
+				if (!cancel &&
+						(event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT)) {
 					event.setCancelled(true);
-
 					if (event.getCurrentItem() != null) {
 						player.getInventory().addItem(event.getCurrentItem());
 					}
@@ -49,6 +47,7 @@ public class ButtonListener implements Listener {
 				if (Menu.currentlyOpenedMenus.containsKey(player.getName())) {
 					Menu newMenu = Menu.currentlyOpenedMenus.get(player.getName());
 					if (newMenu == openMenu) {
+						boolean buttonUpdate = button.shouldUpdate(player, event.getSlot(), event.getClick());
 						if (openMenu.isUpdateAfterClick()) {
 							openMenu.setClosedByMenu(true);
 							newMenu.openMenu(player);
@@ -58,9 +57,8 @@ public class ButtonListener implements Listener {
 					openMenu.setClosedByMenu(true);
 					openMenu.openMenu(player);
 				}
-
 				if (event.isCancelled()) {
-					Bukkit.getScheduler().runTaskLater(Hub.getInstance(), player::updateInventory, 1L);
+					Bukkit.getScheduler().runTaskLater(Hub.getInstance(), () -> player.updateInventory(), 1L);
 				}
 			} else {
 				if ((event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT || event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY) || event.getAction().equals(InventoryAction.HOTBAR_MOVE_AND_READD) || event.getAction().equals(InventoryAction.HOTBAR_SWAP))) {
@@ -77,9 +75,6 @@ public class ButtonListener implements Listener {
 		if (openMenu != null) {
 			openMenu.onClose(player);
 			Menu.currentlyOpenedMenus.remove(player.getName());
-			if (openMenu instanceof PaginatedMenu) {
-				return;
-			}
 		}
 
 		player.setMetadata("scanglitch", new FixedMetadataValue(Hub.getInstance(), true));
@@ -88,7 +83,6 @@ public class ButtonListener implements Listener {
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-
 		if (player.hasMetadata("scanglitch")) {
 			player.removeMetadata("scanglitch", Hub.getInstance());
 			for (ItemStack it : player.getInventory().getContents()) {

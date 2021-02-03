@@ -3,5 +3,5 @@ package me.elb1to.watermc.hub.utils.menu.callback;
 import java.io.Serializable;
 
 public interface TypeCallback<T> extends Serializable {
-	void callback(T data);
+    void callback(T data);
 }
