@@ -33,8 +33,8 @@ public class SettingsMenu extends Menu {
 		Map<Integer, Button> buttons = new HashMap<>();
 
 		buttons.put(10, new ParticleHiderButton());
-		buttons.put(11, new PlayerFlightButton());
-		buttons.put(12, new PlayerHiderButton());
+		buttons.put(11, new PlayerHiderButton());
+		buttons.put(12, new PlayerFlightButton());
 		buttons.put(13, new PlayerSpeedButton());
 
 		buttons.put(16, new OpenCosmeticsButton());
@@ -49,7 +49,7 @@ public class SettingsMenu extends Menu {
 		public ItemStack getButtonItem(Player player) {
 			HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
 
-			return new ItemBuilder(Material.GLOWSTONE_DUST)
+			return new ItemBuilder(Material.FIRE)
 					.setName("&bMostrar Particulas")
 					.setLore(Arrays.asList(
 							CC.MENU_BAR,
