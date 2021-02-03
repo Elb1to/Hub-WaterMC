@@ -86,7 +86,6 @@ public class HubPlayer {
 		}
 
 		this.dataLoaded = true;
-		Hub.getInstance().getLogger().info(getName() + "'s data was successfully loaded.");
 	}
 
 	public void saveData() {
@@ -109,8 +108,6 @@ public class HubPlayer {
 
 		playersDataNames.remove(this.name);
 		playersData.remove(this.uuid);
-
-		this.dataLoaded = false;
 
 		MongoDbManager mongoDB = Hub.getInstance().getMongoDbManager();
 		mongoDB.getHubPlayerData().replaceOne(Filters.eq("uuid", this.uuid), document, (new UpdateOptions()).upsert(true));
