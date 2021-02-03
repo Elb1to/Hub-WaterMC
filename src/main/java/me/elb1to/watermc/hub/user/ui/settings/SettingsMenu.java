@@ -18,10 +18,16 @@ import java.util.Map;
 
 /**
  * Created by Elb1to
- * Project: Frost
- * Date: 07/15/2020 @ 12:43
+ * Project: Hub [WaterMC]
+ * Date: 03/02/2020 @ 12:43
  */
 public class SettingsMenu extends Menu {
+
+	private HubPlayer hubPlayer;
+
+	public SettingsMenu(HubPlayer hubPlayer) {
+		this.hubPlayer = hubPlayer;
+	}
 
 	@Override
 	public String getTitle(Player player) {
@@ -47,7 +53,7 @@ public class SettingsMenu extends Menu {
 
 		@Override
 		public ItemStack getButtonItem(Player player) {
-			HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+			//HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
 
 			return new ItemBuilder(Material.FIREBALL)
 					.setName("&bMostrar Particulas")
@@ -64,7 +70,7 @@ public class SettingsMenu extends Menu {
 
 		@Override
 		public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
-			HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+			//HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
 
 			playSound(!hubPlayer.isHidingParticles(), player);
 			hubPlayer.setHidingParticles(!hubPlayer.isHidingParticles());
@@ -85,7 +91,7 @@ public class SettingsMenu extends Menu {
 
 		@Override
 		public ItemStack getButtonItem(Player player) {
-			HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+			//HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
 
 			return new ItemBuilder(Material.EYE_OF_ENDER)
 					.setName("&bMostrar Jugadores")
@@ -102,7 +108,7 @@ public class SettingsMenu extends Menu {
 
 		@Override
 		public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
-			HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+			//HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
 
 			playSound(!hubPlayer.isHidingPlayers(), player);
 			hubPlayer.setHidingPlayers(!hubPlayer.isHidingPlayers());
@@ -123,12 +129,13 @@ public class SettingsMenu extends Menu {
 
 		@Override
 		public ItemStack getButtonItem(Player player) {
+			//HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
 
 			return new ItemBuilder(Material.FEATHER)
 					.setName("&bActivar Vuelo")
 					.setLore(Arrays.asList(
 							CC.MENU_BAR,
-							"&fActualmente " + (player.getAllowFlight() ? "&c&ldesactivado" : "&a&lactivado"),
+							"&fActualmente " + (hubPlayer.isFlyModeEnabled() ? "&c&ldesactivado" : "&a&lactivado"),
 							" ",
 							"&7Si esta activado podras",
 							"&7volar por todo el Hub.",
@@ -139,7 +146,11 @@ public class SettingsMenu extends Menu {
 
 		@Override
 		public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
-			player.sendMessage(CC.translate(CC.centerMessage("&atogglearFly")));
+			//HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+
+			playSound(!hubPlayer.isFlyModeEnabled(), player);
+			hubPlayer.setFlyModeEnabled(!hubPlayer.isFlyModeEnabled());
+			player.sendMessage(CC.translate(hubPlayer.isFlyModeEnabled() ? "&cHaz desactivado el modo de vuelo." : "&aHaz activado el modo de vuelo!"));
 		}
 
 		private void playSound(boolean enabled, Player player) {
@@ -156,13 +167,13 @@ public class SettingsMenu extends Menu {
 
 		@Override
 		public ItemStack getButtonItem(Player player) {
+			//HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
 
 			return new ItemBuilder(Material.SUGAR)
 					.setName("&bActivar Velocidad")
 					.setLore(Arrays.asList(
 							CC.MENU_BAR,
-							//"&fActualmente " + (player.getAllowFlight() ? "&c&ldesactivado" : "&a&lactivado"),
-							"&fActualmente &c&ldesactivado",
+							"&fActualmente " + (hubPlayer.isSpeedModeEnabled() ? "&c&ldesactivado" : "&a&lactivado"),
 							" ",
 							"&7Si esta activado podras",
 							"&7correr mucho mas rapido",
@@ -174,7 +185,11 @@ public class SettingsMenu extends Menu {
 
 		@Override
 		public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
-			player.sendMessage(CC.translate(CC.centerMessage("&aaumentarSpeed")));
+			//HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+
+			playSound(!hubPlayer.isSpeedModeEnabled(), player);
+			hubPlayer.setSpeedModeEnabled(!hubPlayer.isSpeedModeEnabled());
+			player.sendMessage(CC.translate(hubPlayer.isSpeedModeEnabled() ? "&cHaz desactivado tu aumento de velocidad." : "&aHaz activado la velocidad extra!"));
 		}
 
 		private void playSound(boolean enabled, Player player) {
@@ -211,14 +226,6 @@ public class SettingsMenu extends Menu {
 		@Override
 		public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
 			player.sendMessage(CC.translate(CC.centerMessage("&a{AbrirMenuDeCosmeticos}")));
-		}
-
-		private void playSound(boolean enabled, Player player) {
-			if (enabled) {
-				playSuccess(player);
-			} else {
-				playNeutral(player);
-			}
 		}
 	}
 

@@ -36,6 +36,8 @@ public class HubPlayer {
 
 	private boolean hidingParticles = false;
 	private boolean hidingPlayers = false;
+	private boolean flyModeEnabled = false;
+	private boolean speedModeEnabled = false;
 
 	public HubPlayer(UUID uuid, String name) {
 		this.uuid = uuid;
@@ -79,6 +81,8 @@ public class HubPlayer {
 
 			this.hidingPlayers = document.getBoolean("hidingPlayers");
 			this.hidingParticles = document.getBoolean("hidingParticles");
+			this.flyModeEnabled = document.getBoolean("flyMode");
+			this.speedModeEnabled = document.getBoolean("speedMode");
 		}
 
 		this.dataLoaded = true;
@@ -98,8 +102,10 @@ public class HubPlayer {
 		document.put("currentArmor", this.currentArmor);
 		document.put("currentParticle", this.currentParticle);
 
-		document.put("hidingPlayers",this.hidingPlayers);
-		document.put("hidingParticles",this.hidingParticles);
+		document.put("hidingPlayers", this.hidingPlayers);
+		document.put("hidingParticles", this.hidingParticles);
+		document.put("flyMode", this.flyModeEnabled);
+		document.put("speedMode", this.speedModeEnabled);
 
 		playersDataNames.remove(this.name);
 		playersData.remove(this.uuid);
