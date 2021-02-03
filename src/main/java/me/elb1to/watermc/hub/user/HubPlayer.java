@@ -109,6 +109,8 @@ public class HubPlayer {
 		playersDataNames.remove(this.name);
 		playersData.remove(this.uuid);
 
+		this.dataLoaded = false;
+
 		MongoDbManager mongoDB = Hub.getInstance().getMongoDbManager();
 		mongoDB.getHubPlayerData().replaceOne(Filters.eq("uuid", this.uuid), document, (new UpdateOptions()).upsert(true));
 	}
