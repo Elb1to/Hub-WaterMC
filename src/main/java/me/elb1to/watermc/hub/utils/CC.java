@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class CC {
 
-	public static String SB_BAR = ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH.toString() + "----------------------";
+	public static String SB_BAR = ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH.toString() + "------------------";
 	public static String MENU_BAR = ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH.toString() + "------------------------";
 	public static String CHAT_BAR = ChatColor.GRAY.toString() + ChatColor.STRIKETHROUGH.toString() + "------------------------------------------------";
 
@@ -85,5 +86,43 @@ public class CC {
 		}
 
 		return Color.WHITE;
+	}
+
+	public static String centerMessage(String message) {
+		String[] lines = ChatColor.translateAlternateColorCodes('&', message).split("\n", 40);
+		StringBuilder returnMessage = new StringBuilder();
+
+		for (String line : lines) {
+			int messagePxSize = 0;
+			boolean previousCode = false;
+			boolean isBold = false;
+
+			for (char c : line.toCharArray()) {
+				if (c == '§') {
+					previousCode = true;
+				} else if (previousCode) {
+					previousCode = false;
+					isBold = c == 'l';
+				} else {
+					CenteringEnum centeringEnum = CenteringEnum.getDefaultCenteringInfo(c);
+					messagePxSize = isBold ? messagePxSize + centeringEnum.getBoldLength() : messagePxSize + centeringEnum.getLength();
+					messagePxSize++;
+				}
+			}
+
+			int toCompensate = 154 - messagePxSize / 2;
+			int spaceLength = CenteringEnum.SPACE.getLength() + 1;
+			int compensated = 0;
+
+			StringBuilder sb = new StringBuilder();
+			while (compensated < toCompensate) {
+				sb.append(" ");
+				compensated += spaceLength;
+			}
+
+			returnMessage.append(sb.toString()).append(line).append("\n");
+		}
+
+		return returnMessage.toString();
 	}
 }
