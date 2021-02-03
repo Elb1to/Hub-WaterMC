@@ -6,6 +6,7 @@ import me.elb1to.watermc.hub.user.HubPlayer;
 import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.scoreboard.BoardAdapter;
 import me.elb1to.watermc.hub.utils.scoreboard.BoardStyle;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class ScoreboardProvider implements BoardAdapter {
 
 	@Override
 	public String getTitle(Player player) {
-		return CC.translate("&3&lHUB");
+		return CC.translate("&3&lWaterMC &fNetwork");
 	}
 
 	@Override
@@ -39,28 +40,19 @@ public class ScoreboardProvider implements BoardAdapter {
 		switch (hubPlayer.getState()) {
 			case LOBBY:
 				lines.add(CC.translate("&fJugadores:"));
-				lines.add(CC.translate("  &b" + plugin.getNetworkTotalPlayer("BUNGEE", true)));
+				lines.add(CC.translate("&b" + this.plugin.getNetworkTotalPlayer("BUNGEE", true) + " / 2,500"));
 				lines.add(CC.translate(" "));
 				lines.add(CC.translate("&fRango:"));
-				//lines.add(CC.translate("  &b"));
-				lines.add(CC.translate("  &bDeveloper"));
-				lines.add(CC.translate(" "));
-				lines.add(CC.translate("&fDuracion:"));
-				//lines.add(CC.translate("  &b"));
-				lines.add(CC.translate("  &bPermamente"));
+				lines.add(CC.translate(StringUtils.capitalize(this.plugin.getVaultPerm().getPrimaryGroup(player))));
 				break;
 			case QUEUE:
 				Queue queue = this.plugin.getQueueManager().getPlayerQueue(player);
 				lines.add(CC.translate("&fJugadores:"));
-				lines.add(CC.translate("  &b" + plugin.getNetworkTotalPlayer("BUNGEE", true)));
+				lines.add(CC.translate("&b" + this.plugin.getNetworkTotalPlayer("BUNGEE", true) + " / 2,500"));
 				lines.add(CC.translate(" "));
 				lines.add(CC.translate("&fRango:"));
-				//lines.add(CC.translate("   &b"));
-				lines.add(CC.translate("  &bDeveloper"));
-				lines.add(CC.translate(" "));
-				lines.add(CC.translate("&fDuracion:"));
-				//lines.add(CC.translate("   &b"));
-				lines.add(CC.translate("  &bPermamente"));
+				lines.add(CC.translate(this.plugin.getVaultChat().getPlayerPrefix(player)));
+				lines.add(CC.translate(StringUtils.capitalize(this.plugin.getVaultPerm().getPrimaryGroup(player))));
 				lines.add(CC.translate(" "));
 				lines.add(CC.translate("&fEn Cola:"));
 				lines.add(CC.translate("  &bServer&f: &3" + queue.getServer()));
@@ -72,5 +64,12 @@ public class ScoreboardProvider implements BoardAdapter {
 		lines.add(CC.SB_BAR);
 
 		return lines;
+	}
+
+	private String rankGetter(Player player) {
+		String rank = "";
+
+
+		return rank;
 	}
 }
