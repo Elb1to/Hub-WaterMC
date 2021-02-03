@@ -4,16 +4,19 @@ import me.elb1to.watermc.hub.Hub;
 import me.elb1to.watermc.hub.impl.Queue;
 import me.elb1to.watermc.hub.managers.QueueManager;
 import me.elb1to.watermc.hub.user.HubPlayer;
-import me.elb1to.watermc.hub.user.cosmetics.armor.Armor;
+import me.elb1to.watermc.hub.user.ui.settings.SettingsMenu;
 import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.config.ConfigCursor;
+import me.elb1to.watermc.hub.utils.extra.ItemBuilder;
 import me.elb1to.watermc.hub.utils.extra.ServerUtils;
 import me.elb1to.watermc.hub.utils.particles.ParticleUtils;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -30,6 +33,7 @@ public class PlayerListener implements Listener {
 
 	private final Hub plugin = Hub.getInstance();
 	private QueueManager manager = Hub.getInstance().getQueueManager();
+
 	ConfigCursor messages = new ConfigCursor(Hub.getInstance().getMessagesConfig(), "PLAYER");
 	ConfigCursor settings = new ConfigCursor(Hub.getInstance().getSettingsConfig(), "SERVER");
 
@@ -64,11 +68,30 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		if (settings.getBoolean("SEND-WELCOME-MESSAGE")) {
-			for (String welcomeMsg : messages.getStringList("JOIN-MESSAGE")) {
-				player.sendMessage(welcomeMsg);
+		for (int i = 0; i < 80; i++) {
+			player.sendMessage(" ");
+		}
+		for (String welcomeMsg : messages.getStringList("JOIN-MESSAGE")) {
+			if (welcomeMsg.contains("{C}")) {
+				welcomeMsg = welcomeMsg.replace("{C}", "");
+				player.sendMessage(CC.translate(CC.centerMessage(welcomeMsg).replace("{0}", "\n")));
+			} else {
+				player.sendMessage(CC.translate(welcomeMsg.replace("{0}", "\n")));
 			}
 		}
+
+		player.setHealth(20D);
+		player.setFoodLevel(20);
+
+		Location loc = player.getWorld().getSpawnLocation();
+		loc.setX(loc.getX() + 0.5);
+		loc.setZ(loc.getZ() + 0.5);
+		player.teleport(loc);
+
+		player.getInventory().clear();
+		player.getInventory().setItem(1, new ItemBuilder(Material.ENDER_PEARL).setName(CC.translate("&b&lPerla Acuatica &8(&7Click-Derecho&8)")).get());
+		player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS).setName(CC.translate("&b&lServidores &8(&7Click-Derecho&8)")).get());
+		player.getInventory().setItem(7, new ItemBuilder(Material.REDSTONE_COMPARATOR).setName(CC.translate("&b&lOpciones &8(&7Click-Derecho&8)")).get());
 
 		event.setJoinMessage(null);
 	}
@@ -86,6 +109,30 @@ public class PlayerListener implements Listener {
 		if (manager.isQueueing(event.getPlayer())) {
 			Queue queue = manager.getPlayerQueue(event.getPlayer());
 			queue.remove(event.getPlayer());
+		}
+	}
+
+	@EventHandler
+	public void onPlayerChat(AsyncPlayerChatEvent event) {
+		Player player = event.getPlayer();
+		event.setFormat(CC.translate(this.plugin.getVaultChat().getPlayerPrefix(player) + player.getName() + "&7: &f" + event.getMessage()));
+	}
+
+	@EventHandler
+	public void onItemInteraction(PlayerInteractEvent event) {
+		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if (event.getItem() != null && event.getItem().getItemMeta() != null && event.getItem().getItemMeta().getDisplayName() != null) {
+				if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(CC.translate("&b&lServidores &8(&7Click-Derecho&8)"))) {
+					//new SettingsMenu().openMenu(event.getPlayer());
+					event.getPlayer().sendMessage(CC.translate("Abrir selector de modos -> CraftPlayer{}"));
+				}
+				if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(CC.translate("&b&lOpciones &8(&7Click-Derecho&8)"))) {
+					new SettingsMenu().openMenu(event.getPlayer());
+				}
+				if (event.getItem().getType().equals(Material.REDSTONE_COMPARATOR)) {
+					new SettingsMenu().openMenu(event.getPlayer());
+				}
+			}
 		}
 	}
 
