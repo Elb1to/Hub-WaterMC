@@ -49,7 +49,7 @@ public class SettingsMenu extends Menu {
 		public ItemStack getButtonItem(Player player) {
 			HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
 
-			return new ItemBuilder(Material.FIRE)
+			return new ItemBuilder(Material.FIREBALL)
 					.setName("&bMostrar Particulas")
 					.setLore(Arrays.asList(
 							CC.MENU_BAR,
