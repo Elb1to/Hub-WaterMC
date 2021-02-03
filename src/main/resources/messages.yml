@@ -5,7 +5,7 @@ COMMAND:
 PLAYER:
   NOT-FOUND: "&cA player with that name could not be found."
   NOT-QUEUEING: "&cThat player is not queueing for any server."
-  NO-COSMETIC-PERMISSION: '&cYou don''t have this cosmetic.'
+  NO-COSMETIC-PERMISSION: "&cYou don't have this cosmetic."
   QUEUE-CHECK:
     - ""
     - "&b{PLAYERNAME}&f's Queue Info"
@@ -13,6 +13,14 @@ PLAYER:
     - " &3- &bBungee: &f{QUEUE-BUNGEE-NAME}"
     - " &3- &bPosition: &f{QUEUE-POSITION}"
     - ""
+  JOIN-MESSAGE:
+    - "&7&m----------------------------------------------------"
+    - "{C}&3&lWaterMC &fNetwork"
+    - "&f "
+    - "&3 ✦ Twitter: &f@WaterMCNetwork"
+    - "&3 ✦ Tienda: &fhttps://store.watermc.gg/"
+    - "&3 ✦ Discord: &fhttps://discord.gg/xbN5Mfx3vD"
+    - "&7&m----------------------------------------------------"
 
 QUEUE:
   NOT-FOUND: "&cA queue with that name could not be found."
