@@ -53,8 +53,10 @@ public class SettingsMenu extends Menu {
 					.setName("&bMostrar Particulas")
 					.setLore(Arrays.asList(
 							CC.MENU_BAR,
-							"&fEstado: " + (hubPlayer.isHidingParticles() ? "&cOcultas" : "&aVisibles"),
+							"&fActualmente " + (hubPlayer.isHidingParticles() ? "&c&locultas" : "&a&lvisibles"),
 							" ",
+							"&7Si están ocultas no podras",
+							"&7ver las particulas de nadie",
 							CC.MENU_BAR
 							)
 					).get();
@@ -89,8 +91,10 @@ public class SettingsMenu extends Menu {
 					.setName("&bMostrar Jugadores")
 					.setLore(Arrays.asList(
 							CC.MENU_BAR,
-							"&fEstado: " + (hubPlayer.isHidingPlayers() ? "&cOcultos" : "&aVisibles"),
+							"&fActualmente " + (hubPlayer.isHidingPlayers() ? "&c&locultos" : "&a&lvisibles"),
 							" ",
+							"&7Si los jugadores están ocultos",
+							"&7todos serán invisibles para ti.",
 							CC.MENU_BAR
 							)
 					).get();
@@ -124,8 +128,10 @@ public class SettingsMenu extends Menu {
 					.setName("&bActivar Vuelo")
 					.setLore(Arrays.asList(
 							CC.MENU_BAR,
-							"&fEscribir mierda aqui: ",
-							"a",
+							"&fActualmente " + (player.getAllowFlight() ? "&c&ldesactivado" : "&a&lactivado"),
+							" ",
+							"&7Si esta activado podras",
+							"&7volar por todo el Hub.",
 							CC.MENU_BAR
 							)
 					).get();
@@ -155,8 +161,12 @@ public class SettingsMenu extends Menu {
 					.setName("&bActivar Velocidad")
 					.setLore(Arrays.asList(
 							CC.MENU_BAR,
-							"&fEscribir mierda aqui: ",
-							"a",
+							//"&fActualmente " + (player.getAllowFlight() ? "&c&ldesactivado" : "&a&lactivado"),
+							"&fActualmente &c&ldesactivado",
+							" ",
+							"&7Si esta activado podras",
+							"&7correr mucho mas rapido",
+							"&7por todo el Hub.",
 							CC.MENU_BAR
 							)
 					).get();
@@ -186,8 +196,13 @@ public class SettingsMenu extends Menu {
 					.setName("&bCosmetics")
 					.setLore(Arrays.asList(
 							CC.MENU_BAR,
-							"&fEscribir mierda aqui: ",
-							"a",
+							"&7Al clickear aquí podras",
+							"&7escoger particulas para ti!",
+							" ",
+							"&7Tipos de particulas:",
+							"&8 > &aJugador",
+							"&8 > &cDoble Salto",
+							"&8 > &cAl Shiftear",
 							CC.MENU_BAR
 							)
 					).get();
