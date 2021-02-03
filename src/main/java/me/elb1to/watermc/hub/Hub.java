@@ -7,6 +7,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import lombok.Getter;
 import lombok.Setter;
+import me.elb1to.watermc.hub.commands.general.HelpCommand;
 import me.elb1to.watermc.hub.commands.queue.*;
 import me.elb1to.watermc.hub.listeners.DoubleJumpListener;
 import me.elb1to.watermc.hub.listeners.EnderbuttListener;
@@ -14,7 +15,6 @@ import me.elb1to.watermc.hub.listeners.PlayerListener;
 import me.elb1to.watermc.hub.listeners.ServerListener;
 import me.elb1to.watermc.hub.managers.MongoDbManager;
 import me.elb1to.watermc.hub.managers.QueueManager;
-import me.elb1to.watermc.hub.managers.VaultManager;
 import me.elb1to.watermc.hub.providers.ScoreboardProvider;
 import me.elb1to.watermc.hub.providers.TablistProvider;
 import me.elb1to.watermc.hub.tasks.PlayerDataWorkerRunnable;
@@ -24,9 +24,13 @@ import me.elb1to.watermc.hub.utils.command.CommandFramework;
 import me.elb1to.watermc.hub.utils.config.FileConfig;
 import me.elb1to.watermc.hub.utils.extra.PlayerUtils;
 import me.elb1to.watermc.hub.utils.menu.ButtonListener;
+import me.elb1to.watermc.hub.utils.menu.MenuUpdateTask;
 import me.elb1to.watermc.hub.utils.scoreboard.BoardManager;
+import net.milkbowl.vault.chat.Chat;
+import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -43,22 +47,23 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 	private Set<String> bungeeServers = new HashSet<>();
 	private BukkitTask countPlayerTask;
 
-	private VaultManager vaultManager;
-	private CommandFramework commandFramework;
+	private Permission vaultPerm = null;
+	private Chat vaultChat = null;
 
+	private CommandFramework commandFramework;
 	private QueueManager queueManager;
 
 	private MongoDbManager mongoDbManager;
 	private FileConfig settingsConfig, databaseConfig, queuesConfig, messagesConfig, hotbarConfig, armorConfig;
 
-	@Setter private boolean restarting = false;
 	private PlayerDataWorkerRunnable playerDataWorkerRunnable;
 
 	@Override
 	public void onEnable() {
 		instance = this;
 
-		if (!this.getDescription().getAuthors().contains("Elb1to") || !this.getDescription().getName().equals("Hub")) {
+		if (!this.getDescription().getAuthors().contains("Elb1to") || !this.getDescription().getName().equals("Hub")
+			|| !this.getDescription().getWebsite().equals("www.frozed.club") || !this.getDescription().getDescription().equals("WaterMC's Hubcore made by Elb1to")) {
 			System.exit(0);
 			Bukkit.shutdown();
 		}
@@ -72,6 +77,10 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 		this.settingsConfig = new FileConfig(this, "settings.yml");
 		this.messagesConfig = new FileConfig(this, "messages.yml");
 
+		this.setupChat();
+		this.setupPermissions();
+
+		new HelpCommand();
 		new QueueCommand();
 		new QueueInfoCommand();
 		new JoinQueueCommand();
@@ -110,16 +119,17 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 			hubPlayer.saveData();
 		}
 
-		this.mongoDbManager.disconnect();
 		if (countPlayerTask != null) {
 			countPlayerTask.cancel();
 		}
+
+		this.mongoDbManager.disconnect();
 	}
 
 	private void registerStuff() {
 		registerListeners();
 
-		Bukkit.getPluginManager().registerEvents(new ButtonListener(), this);
+		this.getServer().getScheduler().runTaskTimerAsynchronously(this, new MenuUpdateTask(), 5L, 5L);
 
 		Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		Bukkit.getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
@@ -198,5 +208,19 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 		}
 
 		return i;
+	}
+
+	private boolean setupPermissions() {
+		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+		vaultPerm = rsp.getProvider();
+
+		return vaultPerm != null;
+	}
+
+	private boolean setupChat() {
+		RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
+		vaultChat = rsp.getProvider();
+
+		return vaultChat != null;
 	}
 }
