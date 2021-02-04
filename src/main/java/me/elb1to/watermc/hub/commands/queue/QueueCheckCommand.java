@@ -16,8 +16,7 @@ import org.bukkit.entity.Player;
  */
 public class QueueCheckCommand extends BaseCommand {
 
-	@Override
-	@Command(name = "queue.check", permission = "root.command.queue.check")
+	@Override @Command(name = "queue.check", permission = "hub.commands.queue.check")
 	public void onCommand(CommandArgs command) {
 		Player player = command.getPlayer();
 		String[] args = command.getArgs();
@@ -39,7 +38,7 @@ public class QueueCheckCommand extends BaseCommand {
 						msg = msg.replace("{QUEUE-BUNGEE-NAME}", queue.getBungeeName());
 						msg = msg.replace("{QUEUE-POSITION}", String.valueOf(queue.getPosition(player)));
 
-						player.sendMessage(msg);
+						player.sendMessage(CC.translate(msg));
 					});
 				}
 			}

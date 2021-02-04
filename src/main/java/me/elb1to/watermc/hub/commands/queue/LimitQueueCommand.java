@@ -15,8 +15,7 @@ import org.bukkit.entity.Player;
  */
 public class LimitQueueCommand extends BaseCommand {
 
-	@Override
-	@Command(name = "queue.limit", permission = "root.command.queue.limit")
+	@Override @Command(name = "queue.limit", permission = "hub.commands.queue.limit")
 	public void onCommand(CommandArgs command) {
 		Player player = command.getPlayer();
 		String[] args = command.getArgs();
@@ -28,7 +27,7 @@ public class LimitQueueCommand extends BaseCommand {
 
 		Queue queue = Hub.getInstance().getQueueManager().getByString(args[0]);
 		if (queue == null) {
-			player.sendMessage(Hub.getInstance().getMessagesConfig().getString("QUEUE.NOT-FOUND"));
+			player.sendMessage(CC.translate(Hub.getInstance().getMessagesConfig().getString("QUEUE.NOT-FOUND")));
 		} else {
 			int limit;
 			try {
@@ -39,10 +38,10 @@ public class LimitQueueCommand extends BaseCommand {
 			}
 
 			queue.setLimit(limit);
-			player.sendMessage(Hub.getInstance().getMessagesConfig().getString("QUEUE.LIMIT")
+			player.sendMessage(CC.translate(Hub.getInstance().getMessagesConfig().getString("QUEUE.LIMIT")
 					.replace("{QUEUE-LIMIT}", String.valueOf(limit))
 					.replace("{QUEUE-NAME}", queue.getServer())
-			);
+			));
 		}
 	}
 }

@@ -15,16 +15,15 @@ import org.bukkit.entity.Player;
  */
 public class JoinQueueCommand extends BaseCommand {
 
-	@Override
-	@Command(name = "queue.join")
+	@Override @Command(name = "queue.join")
 	public void onCommand(CommandArgs command) {
 		Player player = command.getPlayer();
 		String[] args = command.getArgs();
 
 		if (Hub.getInstance().getQueueManager().isQueueing(player)) {
-			player.sendMessage(Hub.getInstance().getMessagesConfig().getString("QUEUE.ALREADY-QUEUEING")
+			player.sendMessage(CC.translate(Hub.getInstance().getMessagesConfig().getString("QUEUE.ALREADY-QUEUEING")
 					.replace("{QUEUE-NAME}", Hub.getInstance().getQueueManager().getPlayerQueue(player).getServer())
-			);
+			));
 
 			return;
 		}
@@ -34,7 +33,7 @@ public class JoinQueueCommand extends BaseCommand {
 		} else {
 			Queue queue = Hub.getInstance().getQueueManager().getByString(args[0]);
 			if (queue == null) {
-				player.sendMessage(Hub.getInstance().getMessagesConfig().getString("QUEUE.NOT-FOUND"));
+				player.sendMessage(CC.translate(Hub.getInstance().getMessagesConfig().getString("QUEUE.NOT-FOUND")));
 			} else {
 				queue.add(player);
 			}

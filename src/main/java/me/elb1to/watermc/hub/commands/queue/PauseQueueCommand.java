@@ -15,8 +15,7 @@ import org.bukkit.entity.Player;
  */
 public class PauseQueueCommand extends BaseCommand {
 
-	@Override
-	@Command(name = "queue.pause", permission = "root.command.queue.pause")
+	@Override @Command(name = "queue.pause", permission = "hub.commands.queue.pause")
 	public void onCommand(CommandArgs command) {
 		Player player = command.getPlayer();
 		String[] args = command.getArgs();
@@ -31,9 +30,9 @@ public class PauseQueueCommand extends BaseCommand {
 			player.sendMessage(Hub.getInstance().getMessagesConfig().getString("QUEUE.NOT-FOUND"));
 		} else {
 			queue.setPaused(!queue.isPaused());
-			player.sendMessage(Hub.getInstance().getMessagesConfig().getString("QUEUE." + (queue.isPaused() ? "" : "UN-") + "PAUSED")
+			player.sendMessage(CC.translate(Hub.getInstance().getMessagesConfig().getString("QUEUE." + (queue.isPaused() ? "" : "UN-") + "PAUSED")
 					.replace("{QUEUE-NAME}", queue.getServer())
-			);
+			));
 		}
 	}
 }

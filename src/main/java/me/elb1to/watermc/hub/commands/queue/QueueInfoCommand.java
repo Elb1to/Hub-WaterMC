@@ -15,8 +15,7 @@ import org.bukkit.entity.Player;
  */
 public class QueueInfoCommand extends BaseCommand {
 
-	@Override
-	@Command(name = "queue.info", permission = "root.command.queue.info")
+	@Override @Command(name = "queue.info", permission = "hub.commands.queue.info")
 	public void onCommand(CommandArgs command) {
 		Player player = command.getPlayer();
 		String[] args = command.getArgs();
@@ -37,7 +36,7 @@ public class QueueInfoCommand extends BaseCommand {
 				s = s.replace("{QUEUE-STATUS}", Hub.getInstance().getMessagesConfig().getString("QUEUE.STATUS." + (queue.isPaused() ? "" : "UN-") + "PAUSED"));
 				s = s.replace("{QUEUE-LIMIT}", String.valueOf(queue.getLimit()));
 
-				player.sendMessage(s);
+				player.sendMessage(CC.translate(s));
 			});
 		}
 	}

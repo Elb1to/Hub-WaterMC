@@ -1,6 +1,7 @@
 package me.elb1to.watermc.hub.commands.queue;
 
 import me.elb1to.watermc.hub.Hub;
+import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.command.BaseCommand;
 import me.elb1to.watermc.hub.utils.command.Command;
 import me.elb1to.watermc.hub.utils.command.CommandArgs;
@@ -13,13 +14,12 @@ import org.bukkit.entity.Player;
  */
 public class LeaveQueueCommand extends BaseCommand {
 
-	@Override
-	@Command(name = "queue.leave")
+	@Override @Command(name = "queue.leave")
 	public void onCommand(CommandArgs command) {
 		Player player = command.getPlayer();
 
 		if (!Hub.getInstance().getQueueManager().isQueueing(player)) {
-			player.sendMessage(Hub.getInstance().getMessagesConfig().getString("QUEUE.NOT-QUEUEING"));
+			player.sendMessage(CC.translate(Hub.getInstance().getMessagesConfig().getString("QUEUE.NOT-QUEUEING")));
 			return;
 		}
 

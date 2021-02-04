@@ -6,6 +6,9 @@ import com.google.common.io.ByteStreams;
 import lombok.Getter;
 import lombok.Setter;
 import me.elb1to.watermc.hub.Hub;
+import me.elb1to.watermc.hub.user.HubPlayer;
+import me.elb1to.watermc.hub.user.PlayerState;
+import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.config.ConfigCursor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -64,7 +67,7 @@ public class Queue {
                                 s = s.replace("<QUEUE-BUNGEE-NAME>", bungeeName);
                                 s = s.replace("<QUEUE-POSITION>", String.valueOf(getPlayers().indexOf(player) + 1));
                                 s = s.replace("<QUEUE-SIZE>", String.valueOf(uuids.size()));
-                                player.sendMessage(s);
+                                player.sendMessage(CC.translate(s));
                             });
                         }
                     });
@@ -84,7 +87,7 @@ public class Queue {
         }
 
         if (uuids.size() >= limit && !player.hasPermission(restrictionBypass)) {
-            player.sendMessage(this.plugin.getMessagesConfig().getConfiguration().getString("QUEUE.FULL").replace("<QUEUE-NAME>", server).replace("<QUEUE-BUNGEE-NAME>", bungeeName));
+            player.sendMessage(CC.translate(this.plugin.getMessagesConfig().getConfiguration().getString("QUEUE.FULL").replace("<QUEUE-NAME>", server).replace("<QUEUE-BUNGEE-NAME>", bungeeName)));
             return;
         }
 
@@ -92,18 +95,24 @@ public class Queue {
 
         reload();
 
-        player.sendMessage(this.plugin.getMessagesConfig().getConfiguration().getString("QUEUE.JOINED").replace("<QUEUE-NAME>", server).replace("<QUEUE-BUNGEE-NAME>", bungeeName));
+        HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+        hubPlayer.setState(PlayerState.QUEUE);
+        player.sendMessage(CC.translate(this.plugin.getMessagesConfig().getConfiguration().getString("QUEUE.JOINED").replace("<QUEUE-NAME>", server).replace("<QUEUE-BUNGEE-NAME>", bungeeName)));
     }
 
     public void remove(Player player) {
         uuids.remove(player.getUniqueId());
         reload();
 
-        player.sendMessage(this.plugin.getMessagesConfig().getConfiguration().getString("QUEUE.LEFT").replace("<QUEUE-NAME>", server).replace("<QUEUE-BUNGEE-NAME>", bungeeName));
+        HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+        hubPlayer.setState(PlayerState.LOBBY);
+        player.sendMessage(CC.translate(this.plugin.getMessagesConfig().getConfiguration().getString("QUEUE.LEFT").replace("<QUEUE-NAME>", server).replace("<QUEUE-BUNGEE-NAME>", bungeeName)));
     }
 
     private void send(Player player) {
-        player.sendMessage(this.plugin.getMessagesConfig().getConfiguration().getString("QUEUE.BEING-SENT").replace("<QUEUE-NAME>", server).replace("<QUEUE-BUNGEE-NAME>", bungeeName));
+        HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+        hubPlayer.setState(PlayerState.LOBBY);
+        player.sendMessage(CC.translate(this.plugin.getMessagesConfig().getConfiguration().getString("QUEUE.BEING-SENT").replace("<QUEUE-NAME>", server).replace("<QUEUE-BUNGEE-NAME>", bungeeName)));
 
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
         output.writeUTF("ConnectOther");
