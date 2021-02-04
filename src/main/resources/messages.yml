@@ -8,10 +8,10 @@ PLAYER:
   NO-COSMETIC-PERMISSION: "&cYou don't have this cosmetic."
   QUEUE-CHECK:
     - ""
-    - "&b{PLAYERNAME}&f's Queue Info"
-    - " &3- &bServer: &f{QUEUE-NAME}"
-    - " &3- &bBungee: &f{QUEUE-BUNGEE-NAME}"
-    - " &3- &bPosition: &f{QUEUE-POSITION}"
+    - "&b<PLAYERNAME>&f's Queue Info"
+    - "&8 ▶ &bServer: &f<QUEUE-NAME>"
+    - "&8 ▶ &bBungee: &f<QUEUE-BUNGEE-NAME>"
+    - "&8 ▶ &bPosition: &f<QUEUE-POSITION>"
     - ""
   JOIN-MESSAGE:
     - "&7&m----------------------------------------------------"
@@ -24,28 +24,28 @@ PLAYER:
 
 QUEUE:
   NOT-FOUND: "&cA queue with that name could not be found."
-  FULL: "&cQueue '{QUEUE-NAME}' is currently full, buy a VIP Rank at store.tinchx.dev to bypass this restriction."
-  BEING-SENT: "&aYou're being sent to {QUEUE-NAME}." # {QUEUE-BUNGEE-NAME} {QUEUE-NAME}
-  JOINED: "&aYou're now queueing for {QUEUE-NAME}." # {QUEUE-BUNGEE-NAME} {QUEUE-NAME}
-  LEFT: "&cYou're no longer queueing for {QUEUE-NAME}." # {QUEUE-BUNGEE-NAME} {QUEUE-NAME}
-  ALREADY-QUEUEING: "&cYou're already queueing for {QUEUE-NAME}."
+  FULL: "&cQueue '<QUEUE-NAME>' is currently full, buy a VIP Rank at store.tinchx.dev to bypass this restriction."
+  BEING-SENT: "&aYou're being sent to <QUEUE-NAME>." # <QUEUE-BUNGEE-NAME> <QUEUE-NAME>
+  JOINED: "&aYou're now queueing for <QUEUE-NAME>." # <QUEUE-BUNGEE-NAME> <QUEUE-NAME>
+  LEFT: "&cYou're no longer queueing for <QUEUE-NAME>." # <QUEUE-BUNGEE-NAME> <QUEUE-NAME>
+  ALREADY-QUEUEING: "&cYou're already queueing for <QUEUE-NAME>."
   NOT-QUEUEING: "&cYou're not queueing for any server."
-  PAUSED: "&cQueue for {QUEUE-NAME} has been paused."
-  UN-PAUSED: "&aQueue for {QUEUE-NAME} has been resumed."
-  LIMIT: "&aLimit set {QUEUE-LIMIT} for {QUEUE-NAME}."
+  PAUSED: "&cQueue for <QUEUE-NAME> has been paused."
+  UN-PAUSED: "&aQueue for <QUEUE-NAME> has been resumed."
+  LIMIT: "&aLimit set <QUEUE-LIMIT> for <QUEUE-NAME>."
   STATUS:
-    PAUSED: " &3- &bPaused: &aYes"
-    UN-PAUSED: " &3- &bPaused: &cNo"
+    PAUSED: "&8 ▶ &bPaused: &aYes"
+    UN-PAUSED: "&8 ▶ &bPaused: &cNo"
   QUEUEING-INFO:
     - ""
-    - "&fYou're on position &b&l#{QUEUE-POSITION} &fof &3&l#{QUEUE-SIZE} &ffor &b{QUEUE-NAME}&f."
-    - "&fVisit our store and buy the TOP Rank to &aBYPASS &fthis queue."
+    - "&fYou're on position &b&l#<QUEUE-POSITION> &fof &3&l#<QUEUE-SIZE> &ffor &b<QUEUE-NAME>&f."
+    - "&fVisit &bhttps://store.watermc.gg &7and buy a rank to have &ahigher priority &fon &fthis queue."
     - ""
   QUEUE-INFO:
     - ""
-    - "&b{QUEUE-NAME}&f's Queue Info"
-    - " &3- &bBungee: &f{QUEUE-BUNGEE-NAME}"
-    - " &3- &bLimit: &f{QUEUE-LIMIT}"
-    - " &3- &bPlayers: &f{QUEUE-SIZE}"
-    - "{QUEUE-STATUS}"
+    - "&b<QUEUE-NAME>&f's Queue Info"
+    - "&8 ▶ &bBungee: &f<QUEUE-BUNGEE-NAME>"
+    - "&8 ▶ &bLimit: &f<QUEUE-LIMIT>"
+    - "&8 ▶ &bPlayers: &f<QUEUE-SIZE>"
+    - "<QUEUE-STATUS>"
     - ""
