@@ -11,10 +11,9 @@ import org.bukkit.entity.Player;
  * Project: Hub [WaterMC]
  * Date: 2/3/2021 @ 12:50 AM
  */
-public class HelpCommand  extends BaseCommand {
+public class HelpCommand extends BaseCommand {
 
-	@Override
-	@Command(name = "help")
+	@Override @Command(name = "help")
 	public void onCommand(CommandArgs command) {
 		Player player = command.getPlayer();
 
