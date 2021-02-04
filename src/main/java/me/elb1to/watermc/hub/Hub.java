@@ -8,6 +8,7 @@ import com.google.common.io.ByteStreams;
 import lombok.Getter;
 import lombok.Setter;
 import me.elb1to.watermc.hub.commands.general.HelpCommand;
+import me.elb1to.watermc.hub.commands.general.SudoAllCommand;
 import me.elb1to.watermc.hub.commands.queue.*;
 import me.elb1to.watermc.hub.listeners.DoubleJumpListener;
 import me.elb1to.watermc.hub.listeners.EnderbuttListener;
@@ -82,6 +83,7 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 
 		new HelpCommand();
 		new QueueCommand();
+		new SudoAllCommand();
 		new QueueInfoCommand();
 		new JoinQueueCommand();
 		new LeaveQueueCommand();
@@ -103,10 +105,10 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 			new FrozedTablist(this, new TablistProvider(), 0, 20);
 		}
 
-		playerDataWorkerRunnable = new PlayerDataWorkerRunnable();
-		Thread thread = new Thread(playerDataWorkerRunnable);
-		thread.setName("Hub PlayerData Worker");
-		thread.start();
+		//playerDataWorkerRunnable = new PlayerDataWorkerRunnable();
+		//Thread thread = new Thread(playerDataWorkerRunnable);
+		//thread.setName("Hub PlayerData Worker");
+		//thread.start();
 
 		Bukkit.getServer().getPluginManager().registerEvents(new PlayerUtils(), this);
 		registerStuff();
@@ -116,7 +118,7 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 	@Override
 	public void onDisable() {
 		for (HubPlayer hubPlayer : HubPlayer.getAllData()) {
-			hubPlayer.saveData();
+			hubPlayer.saveData(hubPlayer);
 		}
 
 		if (countPlayerTask != null) {

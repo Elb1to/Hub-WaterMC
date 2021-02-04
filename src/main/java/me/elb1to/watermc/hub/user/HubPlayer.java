@@ -1,11 +1,11 @@
 package me.elb1to.watermc.hub.user;
 
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.ReplaceOptions;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import me.elb1to.watermc.hub.Hub;
-import me.elb1to.watermc.hub.managers.MongoDbManager;
 import org.bson.Document;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -24,11 +24,8 @@ import java.util.UUID;
 public class HubPlayer {
 
 	public static Map<UUID, HubPlayer> playersData = new HashMap<>();
-	public static Map<String, HubPlayer> playersDataNames = new HashMap<>();
 
 	private UUID uuid;
-	private String name;
-	private boolean dataLoaded;
 	private PlayerState state;
 
 	private String currentArmor;
@@ -39,21 +36,17 @@ public class HubPlayer {
 	private boolean flyModeEnabled = false;
 	private boolean speedModeEnabled = false;
 
-	public HubPlayer(UUID uuid, String name) {
+	private boolean dataLoaded;
+
+	public HubPlayer(UUID uuid) {
 		this.uuid = uuid;
-		this.name = name;
 		playersData.put(uuid, this);
-		playersDataNames.put(name, this);
 		this.state = PlayerState.LOBBY;
 		this.dataLoaded = false;
 	}
 
 	public static HubPlayer getByUuid(UUID uuid) {
 		return playersData.get(uuid);
-	}
-
-	public static HubPlayer getByName(String name) {
-		return playersDataNames.get(name);
 	}
 
 	public static Collection<HubPlayer> getAllData() {
@@ -68,50 +61,47 @@ public class HubPlayer {
 		return Bukkit.getPlayer(this.uuid);
 	}
 
-	public boolean isOnline() {
-		return (Bukkit.getPlayer(this.uuid) != null);
-	}
+	public void loadData(HubPlayer hubPlayer) {
+		Document document = Hub.getInstance().getMongoDbManager().getHubPlayerData().find(Filters.eq("uuid", hubPlayer.getUuid().toString())).first();
+		if (document == null) {
+			hubPlayer.setCurrentArmor("none");
+			hubPlayer.setCurrentParticle("none");
+			hubPlayer.setState(PlayerState.LOBBY);
 
-	public void loadData() {
-		MongoDbManager mongoDB = Hub.getInstance().getMongoDbManager();
-		Document document = mongoDB.getHubPlayerData().find(Filters.eq("uuid", this.uuid)).first();
-		if (document != null) {
-			this.currentArmor = document.getString("currentArmor");
-			this.currentParticle = document.getString("currentParticle");
-
-			this.hidingPlayers = document.getBoolean("hidingPlayers");
-			this.hidingParticles = document.getBoolean("hidingParticles");
-			this.flyModeEnabled = document.getBoolean("flyMode");
-			this.speedModeEnabled = document.getBoolean("speedMode");
+			this.saveData(hubPlayer);
+			return;
 		}
+
+		Document settingsDocument = (Document) document.get("hubPlayerSettings");
+		hubPlayer.setHidingPlayers(settingsDocument.getBoolean("hidingPlayers"));
+		hubPlayer.setHidingParticles(settingsDocument.getBoolean("hidingParticles"));
+		hubPlayer.setFlyModeEnabled(settingsDocument.getBoolean("flyMode"));
+		hubPlayer.setSpeedModeEnabled(settingsDocument.getBoolean("speedMode"));
 
 		this.dataLoaded = true;
 	}
 
-	public void saveData() {
-		if (!this.dataLoaded) {
+	public void saveData(HubPlayer hubPlayer) {
+		/*if (!this.dataLoaded) {
 			return;
-		}
-
+		}*/
 		Document document = new Document();
-
-		document.put("name", this.name);
 		document.put("uuid", this.uuid.toString());
-
 		document.put("currentArmor", this.currentArmor);
 		document.put("currentParticle", this.currentParticle);
 
-		document.put("hidingPlayers", this.hidingPlayers);
-		document.put("hidingParticles", this.hidingParticles);
-		document.put("flyMode", this.flyModeEnabled);
-		document.put("speedMode", this.speedModeEnabled);
+		Document settingsDocument = new Document();
+		settingsDocument.put("hidingPlayers", hubPlayer.isHidingPlayers());
+		settingsDocument.put("hidingParticles", hubPlayer.isHidingParticles());
+		settingsDocument.put("flyMode", hubPlayer.isFlyModeEnabled());
+		settingsDocument.put("speedMode", hubPlayer.isSpeedModeEnabled());
 
-		playersDataNames.remove(this.name);
-		playersData.remove(this.uuid);
+		document.put("hubPlayerSettings", settingsDocument);
 
 		this.dataLoaded = false;
 
-		MongoDbManager mongoDB = Hub.getInstance().getMongoDbManager();
-		mongoDB.getHubPlayerData().replaceOne(Filters.eq("uuid", this.uuid), document, (new UpdateOptions()).upsert(true));
+		playersData.remove(this.uuid);
+
+		Hub.getInstance().getMongoDbManager().getHubPlayerData().replaceOne(Filters.eq("uuid", hubPlayer.getUuid().toString()), document, new ReplaceOptions().upsert(true));
 	}
 }

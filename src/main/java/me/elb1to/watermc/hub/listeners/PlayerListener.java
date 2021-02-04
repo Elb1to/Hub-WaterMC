@@ -13,6 +13,7 @@ import me.elb1to.watermc.hub.utils.particles.ParticleUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -54,10 +55,10 @@ public class PlayerListener implements Listener {
 
 		HubPlayer hubPlayer = HubPlayer.getByUuid(event.getUniqueId());
 		if (hubPlayer == null) {
-			hubPlayer = new HubPlayer(event.getUniqueId(), event.getName());
+			hubPlayer = new HubPlayer(event.getUniqueId());
 		}
 		if (!hubPlayer.isDataLoaded()) {
-			hubPlayer.loadData();
+			hubPlayer.loadData(hubPlayer);
 		}
 		if (!hubPlayer.isDataLoaded()) {
 			event.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
@@ -68,6 +69,12 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
+		HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+		if (hubPlayer == null) {
+			hubPlayer = new HubPlayer(player.getUniqueId());
+		} else {
+			hubPlayer.loadData(hubPlayer);
+		}
 		for (int i = 0; i < 80; i++) {
 			player.sendMessage(" ");
 		}
@@ -87,6 +94,7 @@ public class PlayerListener implements Listener {
 		loc.setX(loc.getX() + 0.5);
 		loc.setZ(loc.getZ() + 0.5);
 		player.teleport(loc);
+		player.playSound(loc, Sound.VILLAGER_YES,1.0F,1.0F);
 
 		player.getInventory().clear();
 		player.getInventory().setItem(1, new ItemBuilder(Material.ENDER_PEARL).setName(CC.translate("&b&lPerla Acuatica &8(&7Click-Derecho&8)")).get());
@@ -105,13 +113,14 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
-		saveData(player);
 		event.setQuitMessage(null);
 
 		if (manager.isQueueing(event.getPlayer())) {
 			Queue queue = manager.getPlayerQueue(player);
 			queue.remove(player);
 		}
+
+		saveData(player);
 	}
 
 	@EventHandler
@@ -332,6 +341,6 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		hubPlayer.saveData();
+		hubPlayer.saveData(hubPlayer);
 	}
 }

@@ -23,7 +23,7 @@ public class PlayerDataWorkerRunnable implements Runnable {
 				Bukkit.getOnlinePlayers().forEach(player -> HubPlayer.getAllData().forEach(playerData -> {
 					if (!playerData.isDataLoaded()) {
 						HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
-						hubPlayer.loadData();
+						hubPlayer.loadData(playerData);
 						playerData.setDataLoaded(true);
 					}
 				}));
