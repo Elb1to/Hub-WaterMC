@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -124,5 +125,13 @@ public class CC {
 		}
 
 		return returnMessage.toString();
+	}
+
+	public static String build(final String[] args, final int start) {
+		if (start >= args.length) {
+			return "";
+		}
+
+		return ChatColor.stripColor(String.join(" ", Arrays.copyOfRange(args, start, args.length)));
 	}
 }
