@@ -1,17 +1,49 @@
 QUEUE:
   PRACTICE:
     SERVER: "Practice"
-    BUNGEE-SERVER: "na-practice"
+    BUNGEE-SERVER: "practice"
     BYPASS-RESTRICTION-PERMISSION: "bypass.restriction.practice"
     BYPASS-QUEUE-PERMISSION: "bypass.survival"
-    SEND-EVERY: 5 # SECONDS
+    SEND-EVERY: 3 # SECONDS
     DEFAULT-PRIORITY: 50
-    LIMIT: 300
+    LIMIT: 200
   SKYWARS:
     SERVER: "SkyWars"
-    BUNGEE-SERVER: "SkyWars"
+    BUNGEE-SERVER: "swl1"
     BYPASS-RESTRICTION-PERMISSION: "bypass.restriction.skywars"
     BYPASS-QUEUE-PERMISSION: "bypass.skywars"
-    SEND-EVERY: 5 # SECONDS
+    SEND-EVERY: 3 # SECONDS
     DEFAULT-PRIORITY: 50
-    LIMIT: 300
+    LIMIT: 200
+  HCF:
+    SERVER: "HCF"
+    BUNGEE-SERVER: "HCF"
+    BYPASS-RESTRICTION-PERMISSION: "bypass.restriction.hcf"
+    BYPASS-QUEUE-PERMISSION: "bypass.hcf"
+    SEND-EVERY: 3 # SECONDS
+    DEFAULT-PRIORITY: 50
+    LIMIT: 750
+  HCK:
+    SERVER: "HCK"
+    BUNGEE-SERVER: "HCK"
+    BYPASS-RESTRICTION-PERMISSION: "bypass.restriction.hck"
+    BYPASS-QUEUE-PERMISSION: "bypass.hck"
+    SEND-EVERY: 3 # SECONDS
+    DEFAULT-PRIORITY: 50
+    LIMIT: 750
+  SKYKITS:
+    SERVER: "SkyKits"
+    BUNGEE-SERVER: "dev"
+    BYPASS-RESTRICTION-PERMISSION: "bypass.restriction.skykits"
+    BYPASS-QUEUE-PERMISSION: "bypass.skykits"
+    SEND-EVERY: 3 # SECONDS
+    DEFAULT-PRIORITY: 50
+    LIMIT: 750
+  KITS:
+    SERVER: "KitMap"
+    BUNGEE-SERVER: "kits"
+    BYPASS-RESTRICTION-PERMISSION: "bypass.restriction.kitmap"
+    BYPASS-QUEUE-PERMISSION: "bypass.kitmap"
+    SEND-EVERY: 3 # SECONDS
+    DEFAULT-PRIORITY: 50
+    LIMIT: 750
