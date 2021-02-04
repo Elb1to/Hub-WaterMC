@@ -3,10 +3,10 @@ package me.elb1to.watermc.hub.providers;
 import me.elb1to.watermc.hub.Hub;
 import me.elb1to.watermc.hub.impl.Queue;
 import me.elb1to.watermc.hub.user.HubPlayer;
+import me.elb1to.watermc.hub.user.PlayerState;
 import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.scoreboard.BoardAdapter;
 import me.elb1to.watermc.hub.utils.scoreboard.BoardStyle;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -35,41 +35,24 @@ public class ScoreboardProvider implements BoardAdapter {
 	public List<String> getLines(Player player) {
 		List<String> lines = new ArrayList<>();
 		HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+		Queue queue = this.plugin.getQueueManager().getPlayerQueue(player);
 
 		lines.add(CC.SB_BAR);
-		switch (hubPlayer.getState()) {
-			case LOBBY:
-				lines.add(CC.translate("&fJugadores:"));
-				lines.add(CC.translate("&b" + this.plugin.getNetworkTotalPlayer("BUNGEE", true) + " / 2,500"));
-				lines.add(CC.translate(" "));
-				lines.add(CC.translate("&fRango:"));
-				lines.add(CC.translate(StringUtils.capitalize(this.plugin.getVaultPerm().getPrimaryGroup(player))));
-				break;
-			case QUEUE:
-				Queue queue = this.plugin.getQueueManager().getPlayerQueue(player);
-				lines.add(CC.translate("&fJugadores:"));
-				lines.add(CC.translate("&b" + this.plugin.getNetworkTotalPlayer("BUNGEE", true) + " / 2,500"));
-				lines.add(CC.translate(" "));
-				lines.add(CC.translate("&fRango:"));
-				lines.add(CC.translate(this.plugin.getVaultChat().getPlayerPrefix(player)));
-				lines.add(CC.translate(StringUtils.capitalize(this.plugin.getVaultPerm().getPrimaryGroup(player))));
-				lines.add(CC.translate(" "));
-				lines.add(CC.translate("&fEn Cola:"));
-				lines.add(CC.translate("  &bServer&f: &3" + queue.getServer()));
-				lines.add(CC.translate("  &bPosicion&f: &3" + queue.getPosition(player) + "/" + queue.getPlayers().size()));
-				break;
+		lines.add(CC.translate("&fJugadores:"));
+		lines.add(CC.translate("&b" + this.plugin.getNetworkTotalPlayer("BUNGEE", true) + " / 2,500"));
+		lines.add(CC.translate(" "));
+		lines.add(CC.translate("&fRango:"));
+		lines.add(CC.translate(this.plugin.getVaultPerm().getPrimaryGroup(player)));
+		if (hubPlayer.getState().equals(PlayerState.QUEUE)) {
+			lines.add(CC.translate(" "));
+			lines.add(CC.translate("&fEn Cola:"));
+			lines.add(CC.translate("  &bServer&f: &3" + queue.getServer()));
+			lines.add(CC.translate("  &bPosicion&f: &3" + queue.getPosition(player) + "/" + queue.getPlayers().size()));
 		}
 		lines.add(CC.translate(" "));
 		lines.add(CC.translate("&bwatermc.gg"));
 		lines.add(CC.SB_BAR);
 
 		return lines;
-	}
-
-	private String rankGetter(Player player) {
-		String rank = "";
-
-
-		return rank;
 	}
 }
