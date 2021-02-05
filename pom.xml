@@ -34,6 +34,15 @@
             <scope>system</scope>
         </dependency>
 
+        <!-- rTags -->
+        <dependency>
+            <groupId>me.ryzeon</groupId>
+            <artifactId>rTags</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <systemPath>C:/Users/Elb1to/Desktop/WaterMC/rTags-1.0-SNAPSHOT.jar</systemPath>
+            <scope>system</scope>
+        </dependency>
+
         <!-- FrozedTablist -->
         <dependency>
             <groupId>club.frozed.tablist</groupId>
