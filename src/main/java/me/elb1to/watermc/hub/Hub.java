@@ -6,14 +6,10 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import lombok.Getter;
-import lombok.Setter;
 import me.elb1to.watermc.hub.commands.general.HelpCommand;
 import me.elb1to.watermc.hub.commands.general.SudoAllCommand;
 import me.elb1to.watermc.hub.commands.queue.*;
-import me.elb1to.watermc.hub.listeners.DoubleJumpListener;
-import me.elb1to.watermc.hub.listeners.EnderbuttListener;
-import me.elb1to.watermc.hub.listeners.PlayerListener;
-import me.elb1to.watermc.hub.listeners.ServerListener;
+import me.elb1to.watermc.hub.listeners.*;
 import me.elb1to.watermc.hub.managers.MongoDbManager;
 import me.elb1to.watermc.hub.managers.QueueManager;
 import me.elb1to.watermc.hub.providers.ScoreboardProvider;
@@ -69,7 +65,7 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 			Bukkit.shutdown();
 		}
 
-		commandFramework = new CommandFramework(this);
+		this.commandFramework = new CommandFramework(this);
 
 		this.armorConfig = new FileConfig(this, "armor.yml");
 		this.hotbarConfig = new FileConfig(this, "hotbar.yml");
@@ -80,16 +76,6 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 
 		this.setupChat();
 		this.setupPermissions();
-
-		new HelpCommand();
-		new QueueCommand();
-		new SudoAllCommand();
-		new QueueInfoCommand();
-		new JoinQueueCommand();
-		new LeaveQueueCommand();
-		new PauseQueueCommand();
-		new LimitQueueCommand();
-		new QueueCheckCommand();
 
 		this.mongoDbManager = new MongoDbManager();
 		this.mongoDbManager.connect();
@@ -130,6 +116,7 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 
 	private void registerStuff() {
 		registerListeners();
+		registerCommands();
 
 		this.getServer().getScheduler().runTaskTimerAsynchronously(this, new MenuUpdateTask(), 5L, 5L);
 
@@ -149,23 +136,42 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 		).forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));
 	}
 
+	private void registerCommands() {
+		new HelpCommand();
+
+		new SudoAllCommand();
+
+		new QueueCommand();
+		new QueueInfoCommand();
+		new JoinQueueCommand();
+		new LeaveQueueCommand();
+		new PauseQueueCommand();
+		new LimitQueueCommand();
+		new QueueCheckCommand();
+	}
+
 	@Override
-	public void onPluginMessageReceived(String s, Player player, byte[] bytes) {
-		if (!s.equals("BungeeCord")) return;
-		ByteArrayDataInput bytearray = ByteStreams.newDataInput(bytes);
-		String cmd = bytearray.readUTF();
-		if (cmd.equalsIgnoreCase("GetServers")) {
-			Collections.addAll(bungeeServers, bytearray.readUTF().split(", "));
+	public void onPluginMessageReceived(String string, Player player, byte[] bytes) {
+		if (!string.equals("BungeeCord")) {
 			return;
 		}
-		if (!cmd.equalsIgnoreCase("PlayerCount")) {
+
+		ByteArrayDataInput byteArrayDataInput = ByteStreams.newDataInput(bytes);
+		String readUTF = byteArrayDataInput.readUTF();
+		if (readUTF.equalsIgnoreCase("GetServers")) {
+			Collections.addAll(bungeeServers, byteArrayDataInput.readUTF().split(", "));
 			return;
 		}
-		String server = bytearray.readUTF();
+		if (!readUTF.equalsIgnoreCase("PlayerCount")) {
+			return;
+		}
+
+		String server = byteArrayDataInput.readUTF();
 		if (this.serverPlayers.containsKey(server)) {
 			this.serverPlayers.remove(server);
 		}
-		this.serverPlayers.put(server, bytearray.readInt());
+
+		this.serverPlayers.put(server, byteArrayDataInput.readInt());
 	}
 
 	private void startPlayerCountTask() {
