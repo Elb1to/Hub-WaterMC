@@ -9,10 +9,7 @@ import me.elb1to.watermc.hub.user.ui.settings.SettingsMenu;
 import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.config.ConfigCursor;
 import me.elb1to.watermc.hub.utils.extra.ItemBuilder;
-import me.elb1to.watermc.hub.utils.extra.ServerUtils;
-import me.elb1to.watermc.hub.utils.particles.ParticleUtils;
 import me.ryzeon.rtags.data.player.PlayerData;
-import me.ryzeon.rtags.rTagsAPI;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -25,7 +22,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * Created by Elb1to
@@ -138,9 +134,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		Player player = event.getPlayer();
-		rTagsAPI tag = new rTagsAPI(Hub.getInstance());
-
-		PlayerData playerTag = tag.getData(player.getUniqueId());
+		PlayerData playerTag = PlayerData.getData(player.getUniqueId());
 		String playerRank = this.plugin.getVaultChat().getPlayerPrefix(player) + player.getName();
 
 		if (playerTag.getActiveTag() != null) {
@@ -248,13 +242,6 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler
-	public void onTESTCMD(AsyncPlayerChatEvent event) {
-		if (event.getMessage().equalsIgnoreCase("-test")) {
-			//new CosmeticsMenu().openMenu(event.getPlayer());
-		}
-	}
-
-	@EventHandler
 	public void onInteractionDripParticleTest(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 
@@ -293,7 +280,7 @@ public class PlayerListener implements Listener {
 		}.runTaskTimerAsynchronously(Hub.getInstance(), 1, 1);*/
 	}
 
-	@EventHandler
+	/*@EventHandler
 	public void blank(PlayerToggleSneakEvent event) {
 		final Player player = event.getPlayer();
 		new BukkitRunnable() {
@@ -324,7 +311,7 @@ public class PlayerListener implements Listener {
 				}
 			}
 		}.runTaskTimer(this.plugin, 0, 1L);
-	}
+	}*/
 
 	/*@EventHandler
 	public void blank(PlayerToggleSneakEvent event) {
