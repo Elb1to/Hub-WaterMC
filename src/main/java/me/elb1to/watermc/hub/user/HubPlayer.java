@@ -3,7 +3,6 @@ package me.elb1to.watermc.hub.user;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import me.elb1to.watermc.hub.Hub;
 import org.bson.Document;
@@ -33,8 +32,7 @@ public class HubPlayer {
 
 	private boolean hidingParticles = false;
 	private boolean hidingPlayers = false;
-	private boolean flyModeEnabled = false;
-	private boolean speedModeEnabled = false;
+	private boolean flyMode = false;
 
 	private boolean dataLoaded;
 
@@ -75,8 +73,7 @@ public class HubPlayer {
 		Document settingsDocument = (Document) document.get("hubPlayerSettings");
 		hubPlayer.setHidingPlayers(settingsDocument.getBoolean("hidingPlayers"));
 		hubPlayer.setHidingParticles(settingsDocument.getBoolean("hidingParticles"));
-		hubPlayer.setFlyModeEnabled(settingsDocument.getBoolean("flyMode"));
-		hubPlayer.setSpeedModeEnabled(settingsDocument.getBoolean("speedMode"));
+		hubPlayer.setFlyMode(settingsDocument.getBoolean("flyMode"));
 
 		this.dataLoaded = true;
 	}
@@ -93,8 +90,7 @@ public class HubPlayer {
 		Document settingsDocument = new Document();
 		settingsDocument.put("hidingPlayers", hubPlayer.isHidingPlayers());
 		settingsDocument.put("hidingParticles", hubPlayer.isHidingParticles());
-		settingsDocument.put("flyMode", hubPlayer.isFlyModeEnabled());
-		settingsDocument.put("speedMode", hubPlayer.isSpeedModeEnabled());
+		settingsDocument.put("flyMode", hubPlayer.isFlyMode());
 
 		document.put("hubPlayerSettings", settingsDocument);
 
