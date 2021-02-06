@@ -4,13 +4,15 @@ import me.elb1to.watermc.hub.Hub;
 import me.elb1to.watermc.hub.impl.Queue;
 import me.elb1to.watermc.hub.managers.QueueManager;
 import me.elb1to.watermc.hub.user.HubPlayer;
+import me.elb1to.watermc.hub.user.ui.selector.SelectorMenu;
 import me.elb1to.watermc.hub.user.ui.settings.SettingsMenu;
 import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.config.ConfigCursor;
 import me.elb1to.watermc.hub.utils.extra.ItemBuilder;
 import me.elb1to.watermc.hub.utils.extra.ServerUtils;
 import me.elb1to.watermc.hub.utils.particles.ParticleUtils;
-import net.md_5.bungee.api.ChatColor;
+import me.ryzeon.rtags.data.player.PlayerData;
+import me.ryzeon.rtags.rTagsAPI;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -23,6 +25,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -33,10 +36,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class PlayerListener implements Listener {
 
 	private final Hub plugin = Hub.getInstance();
-	private QueueManager manager = Hub.getInstance().getQueueManager();
-
 	ConfigCursor messages = new ConfigCursor(Hub.getInstance().getMessagesConfig(), "PLAYER");
 	ConfigCursor settings = new ConfigCursor(Hub.getInstance().getSettingsConfig(), "SERVER");
+	private QueueManager manager = Hub.getInstance().getQueueManager();
 
 	@EventHandler
 	public void gearPlayerOnJoin(PlayerJoinEvent event) {
@@ -89,17 +91,23 @@ public class PlayerListener implements Listener {
 
 		player.setHealth(20D);
 		player.setFoodLevel(20);
+		player.setWalkSpeed(0.5F);
 
 		Location loc = player.getWorld().getSpawnLocation();
 		loc.setX(loc.getX() + 0.5);
 		loc.setZ(loc.getZ() + 0.5);
 		player.teleport(loc);
-		player.playSound(loc, Sound.VILLAGER_YES,1.0F,1.0F);
+		player.playSound(loc, Sound.VILLAGER_YES, 1.0F, 1.0F);
 
 		player.getInventory().clear();
 		player.getInventory().setItem(1, new ItemBuilder(Material.ENDER_PEARL).setName(CC.translate("&b&lPerla Acuatica &8(&7Click-Derecho&8)")).get());
 		player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS).setName(CC.translate("&b&lServidores &8(&7Click-Derecho&8)")).get());
 		player.getInventory().setItem(7, new ItemBuilder(Material.REDSTONE_COMPARATOR).setName(CC.translate("&b&lOpciones &8(&7Click-Derecho&8)")).get());
+
+		if (hubPlayer.isFlyMode()) {
+			player.setAllowFlight(true);
+			player.setFlying(true);
+		}
 
 		event.setJoinMessage(null);
 	}
@@ -120,13 +128,27 @@ public class PlayerListener implements Listener {
 			queue.remove(player);
 		}
 
+		HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+		if (hubPlayer.isFlyMode()) {
+			player.setAllowFlight(false);
+		}
+
 		saveData(player);
 	}
 
 	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		Player player = event.getPlayer();
-		event.setFormat(CC.translate(this.plugin.getVaultChat().getPlayerPrefix(player) + player.getName() + "&7: &f" + event.getMessage()));
+		rTagsAPI tag = new rTagsAPI(Hub.getInstance());
+
+		PlayerData playerTag = tag.getData(player.getUniqueId());
+		String playerRank = this.plugin.getVaultChat().getPlayerPrefix(player) + player.getName();
+
+		if (playerTag.getActiveTag() != null) {
+			event.setFormat(CC.translate(playerTag.getActiveTag().getPrefix() + " " + playerRank + "&7: &f" + event.getMessage()));
+		} else {
+			event.setFormat(CC.translate(playerRank + "&7: &f" + event.getMessage()));
+		}
 	}
 
 	@EventHandler
@@ -137,8 +159,7 @@ public class PlayerListener implements Listener {
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (event.getItem() != null && event.getItem().getItemMeta() != null && event.getItem().getItemMeta().getDisplayName() != null) {
 				if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(CC.translate("&b&lServidores &8(&7Click-Derecho&8)"))) {
-					//new SettingsMenu().openMenu(event.getPlayer());
-					player.sendMessage(CC.translate("Abrir selector de modos -> CraftPlayer{}"));
+					new SelectorMenu().openMenu(player);
 				}
 				if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(CC.translate("&b&lOpciones &8(&7Click-Derecho&8)"))) {
 					new SettingsMenu(hubPlayer).openMenu(player);
@@ -335,7 +356,7 @@ public class PlayerListener implements Listener {
 		}.runTaskTimer(this.plugin, 0, 1L);
 	}*/
 
-	private void saveData(Player player){
+	private void saveData(Player player) {
 		HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
 		if (hubPlayer == null) {
 			return;
