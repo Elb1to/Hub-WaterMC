@@ -32,8 +32,12 @@ public class EnderbuttListener implements Listener {
 					enderPearl.setPassenger(player);
 					enderPearl.setVelocity(player.getLocation().getDirection().multiply(2));
 					player.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1.0F, 1.0F);
-					ProjectileParticle.play(enderPearl, new NormalParticle(ParticleUtils.ParticleType.HAPPY_VILLAGER, enderPearl.getLocation()));
 					player.updateInventory();
+
+					if (player.hasPermission("hub.perks.pearltrail")) {
+						ProjectileParticle.play(enderPearl, new NormalParticle(ParticleUtils.ParticleType.DRIP_WATER, enderPearl.getLocation()));
+						ProjectileParticle.play(enderPearl, new NormalParticle(ParticleUtils.ParticleType.MAGIC_CRIT, enderPearl.getLocation()));
+					}
 				}
 			}
 		}

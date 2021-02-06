@@ -59,7 +59,7 @@ public class CommandFramework implements CommandExecutor {
 				Object methodObject = commandMap.get(cmdLabel).getValue();
 				Command command = method.getAnnotation(Command.class);
 
-				if (command.isAdminOnly() && !sender.hasPermission("frozedsg.admin")) {
+				if (command.isAdminOnly() && !sender.hasPermission("hub.admin")) {
 					sender.sendMessage(ChatColor.RED + "Only ops may execute this command.");
 					return true;
 				}
