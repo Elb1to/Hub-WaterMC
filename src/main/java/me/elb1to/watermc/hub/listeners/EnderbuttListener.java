@@ -1,63 +1,65 @@
 package me.elb1to.watermc.hub.listeners;
 
-import me.elb1to.watermc.hub.Hub;
-import org.bukkit.GameMode;
+import me.elb1to.watermc.hub.utils.particles.ParticleUtils;
+import me.elb1to.watermc.hub.utils.particles.types.NormalParticle;
+import me.elb1to.watermc.hub.utils.particles.types.ProjectileParticle;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Item;
+import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.spigotmc.event.entity.EntityDismountEvent;
 
 public class EnderbuttListener implements Listener {
 
-    public void setupEnderpearlRunnable(Item item) {
-        new BukkitRunnable() {
-            public void run() {
-                if (item.isDead()) {
-                    this.cancel();
-                }
-                if (item.getVelocity().getX() == 0.0D || item.getVelocity().getY() == 0.0D || item.getVelocity().getZ() == 0.0D) {
-                    Player player = (Player) item.getPassenger();
-                    item.remove();
-                    if (player != null) {
-                        player.teleport(player.getLocation().add(0.0D, 0.5D, 0.0D));
-                    }
-                    this.cancel();
-                }
-                if (item.getPassenger() == null) {
-                    item.remove();
-                    this.cancel();
-                }
-            }
-        }.runTaskTimer(Hub.getInstance(), 2L, 1L);
-    }
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		if (event.hasItem()) {
+			if (event.getAction().name().contains("RIGHT")) {
+				if (event.getItem().getType() == Material.ENDER_PEARL) {
+					Player player = event.getPlayer();
+					event.setCancelled(true);
+					if (player.getVehicle() != null && player.getVehicle() instanceof EnderPearl) {
+						player.getVehicle().remove();
+					}
 
-    @EventHandler
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        Action action = event.getAction();
-        if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK) {
-            Player player = event.getPlayer();
-            ItemStack itemStack = player.getItemInHand();
-            if (itemStack.getType() == Material.ENDER_PEARL) {
-                event.setCancelled(true);
-                event.setUseItemInHand(Event.Result.DENY);
-                event.setUseInteractedBlock(Event.Result.DENY);
-                if (player.getGameMode() == GameMode.SURVIVAL) {
-                    Item item = player.getWorld().dropItem(player.getLocation().add(0.0D, 0.5D, 0.0D), new ItemStack(Material.ENDER_PEARL, 1));
-                    item.setPickupDelay(10000);
-                    item.setVelocity(player.getLocation().getDirection().normalize().multiply(2F));
-                    item.setPassenger(player);
-                    player.getWorld().playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1.0F, 1.0F);
-                    this.setupEnderpearlRunnable(item);
-                    player.updateInventory();
-                }
-            }
-        }
-    }
+					EnderPearl enderPearl = player.launchProjectile(EnderPearl.class);
+					enderPearl.setPassenger(player);
+					enderPearl.setVelocity(player.getLocation().getDirection().multiply(2));
+					player.playSound(player.getLocation(), Sound.ENDERMAN_TELEPORT, 1.0F, 1.0F);
+					ProjectileParticle.play(enderPearl, new NormalParticle(ParticleUtils.ParticleType.HAPPY_VILLAGER, enderPearl.getLocation()));
+					player.updateInventory();
+				}
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void OnProjectileHit(ProjectileHitEvent event) {
+		if (event.getEntity() instanceof EnderPearl) {
+			if (event.getEntity().getShooter() instanceof Player) {
+				((Player) event.getEntity().getShooter()).getLocation().add(0.0D, 1.0D, 0.0D);
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void OnEntityDismount(EntityDismountEvent event) {
+		if (event.getEntity() instanceof Player) {
+			event.getDismounted().remove();
+			event.getEntity().getLocation().add(0.0D, 1.0D, 0.0D);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void OnPlayerQuit(PlayerQuitEvent event) {
+		if (event.getPlayer().isInsideVehicle()) {
+			event.getPlayer().getVehicle().remove();
+		}
+	}
 }
