@@ -54,13 +54,14 @@ public class Queue {
         this.uuids = Lists.newArrayList();
 
         new BukkitRunnable() {
-
             @Override
             public void run() {
                 if (!paused && !getPlayers().isEmpty()) {
                     getPlayers().forEach(player -> {
-                        if (getPlayers().get(0) == player) {
+                        HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+                        if (getPlayers().get(0) == player && hubPlayer != null) {
                             send(player);
+                            remove(player);
                         } else {
                             Hub.getInstance().getMessagesConfig().getConfiguration().getStringList("QUEUE.QUEUEING-INFO").forEach(s -> {
                                 s = s.replace("<QUEUE-NAME>", server);
@@ -83,6 +84,7 @@ public class Queue {
     public void add(Player player) {
         if (player.hasPermission(bypassPermission) || getPriority(player) == 0) {
             send(player);
+            remove(player);
             return;
         }
 
