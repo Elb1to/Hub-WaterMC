@@ -1,8 +1,11 @@
 package me.elb1to.watermc.hub.listeners;
 
+import com.nametagedit.plugin.NametagEdit;
+import com.nametagedit.plugin.api.events.NametagEvent;
 import me.elb1to.watermc.hub.Hub;
 import me.elb1to.watermc.hub.impl.Queue;
 import me.elb1to.watermc.hub.managers.QueueManager;
+import me.elb1to.watermc.hub.providers.ServerRanks;
 import me.elb1to.watermc.hub.user.HubPlayer;
 import me.elb1to.watermc.hub.user.ui.selector.SelectorMenu;
 import me.elb1to.watermc.hub.user.ui.settings.SettingsMenu;
@@ -10,9 +13,8 @@ import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.config.ConfigCursor;
 import me.elb1to.watermc.hub.utils.extra.ItemBuilder;
 import me.ryzeon.rtags.data.player.PlayerData;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import net.luckperms.api.LuckPermsProvider;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,6 +24,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
+
+import java.util.Objects;
 
 /**
  * Created by Elb1to
@@ -103,6 +107,12 @@ public class PlayerListener implements Listener {
 			player.setAllowFlight(true);
 			player.setFlying(true);
 		}
+
+		Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+			if (Bukkit.getPluginManager().getPlugin("NametagEdit") != null) {
+				NametagEdit.getApi().setPrefix(player, getNametagColor(player));
+			}
+		}, 2L);
 
 		event.setJoinMessage(null);
 	}
@@ -349,5 +359,66 @@ public class PlayerListener implements Listener {
 		}
 
 		hubPlayer.saveData(hubPlayer);
+	}
+
+	private String getNametagColor(Player player) {
+		String color;
+		String group = Objects.requireNonNull(LuckPermsProvider.get().getUserManager().getUser(player.getUniqueId())).getPrimaryGroup();
+
+		if (group.equalsIgnoreCase(ServerRanks.OWNER.getName())) {
+			color = ServerRanks.OWNER.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.CO_OWNER.getName())) {
+			color = ServerRanks.CO_OWNER.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.DEVELOPER.getName())) {
+			color = ServerRanks.DEVELOPER.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.PLAT_ADMIN.getName())) {
+			color = ServerRanks.PLAT_ADMIN.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.SR_ADMIN.getName())) {
+			color = ServerRanks.SR_ADMIN.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.ADMIN.getName())) {
+			color = ServerRanks.ADMIN.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.JR_ADMIN.getName())) {
+			color = ServerRanks.JR_ADMIN.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.SR_MOD.getName())) {
+			color = ServerRanks.SR_MOD.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.MOD_PLUS.getName())) {
+			color = ServerRanks.MOD_PLUS.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.MOD.getName())) {
+			color = ServerRanks.MOD.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.TRIAL_MOD.getName())) {
+			color = ServerRanks.TRIAL_MOD.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.HELPER.getName())) {
+			color = ServerRanks.HELPER.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.PARTNER.getName())) {
+			color = ServerRanks.PARTNER.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.FAMOUS.getName())) {
+			color = ServerRanks.FAMOUS.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.STREAMER.getName())) {
+			color = ServerRanks.STREAMER.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.YOUTUBER.getName())) {
+			color = ServerRanks.YOUTUBER.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.MINI_YT.getName())) {
+			color = ServerRanks.MINI_YT.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.WATER.getName())) {
+			color = ServerRanks.WATER.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.KRAKEN_PLUS.getName())) {
+			color = ServerRanks.KRAKEN_PLUS.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.KRAKEN.getName())) {
+			color = ServerRanks.KRAKEN.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.POSEIDON.getName())) {
+			color = ServerRanks.POSEIDON.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.APOLO.getName())) {
+			color = ServerRanks.APOLO.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.TRITON.getName())) {
+			color = ServerRanks.TRITON.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.VERIFIED.getName())) {
+			color = ServerRanks.VERIFIED.getNametag();
+		} else if (group.equalsIgnoreCase(ServerRanks.USER.getName())) {
+			color = ServerRanks.USER.getNametag();
+		} else {
+			color = ServerRanks.DEFAULT.getNametag();
+		}
+
+		return color;
 	}
 }
