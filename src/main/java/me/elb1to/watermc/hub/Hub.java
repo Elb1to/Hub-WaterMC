@@ -7,6 +7,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import lombok.Getter;
 import me.elb1to.watermc.hub.commands.general.HelpCommand;
+import me.elb1to.watermc.hub.commands.general.SpawnCommand;
 import me.elb1to.watermc.hub.commands.general.SudoAllCommand;
 import me.elb1to.watermc.hub.commands.queue.*;
 import me.elb1to.watermc.hub.listeners.*;
@@ -87,10 +88,6 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 		Bukkit.getConsoleSender().sendMessage(CC.translate("&7Made on &bFrozed Club Development &7by &bElb1to"));
 		Bukkit.getConsoleSender().sendMessage(CC.CHAT_BAR);
 
-		if (settingsConfig.getConfiguration().getBoolean("SETTINGS.GENERAL.TABLIST-ENABLED")) {
-			new FrozedTablist(this, new TablistProvider(), 0, 20);
-		}
-
 		//playerDataWorkerRunnable = new PlayerDataWorkerRunnable();
 		//Thread thread = new Thread(playerDataWorkerRunnable);
 		//thread.setName("Hub PlayerData Worker");
@@ -123,7 +120,11 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 		Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		Bukkit.getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 
-		new BoardManager(new ScoreboardProvider(), 2);
+		new BoardManager(new ScoreboardProvider(), 20);
+
+		if (settingsConfig.getConfiguration().getBoolean("SETTINGS.SERVER.TABLIST")) {
+			new FrozedTablist(this, new TablistProvider(), 0, 20);
+		}
 	}
 
 	private void registerListeners() {
@@ -137,8 +138,8 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 	}
 
 	private void registerCommands() {
+		new SpawnCommand();
 		new HelpCommand();
-
 		new SudoAllCommand();
 
 		new QueueCommand();
