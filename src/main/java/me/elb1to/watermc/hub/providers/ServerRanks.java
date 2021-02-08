@@ -10,9 +10,9 @@ import lombok.Getter;
 @Getter
 public enum ServerRanks {
 
-	OWNER("&4❃&l", "owner"),
-	CO_OWNER("&4✦&l", "co-owner"),
-	DEVELOPER("&3❈&b&o", "developer"),
+	OWNER("&4❃&l ", "owner"),
+	CO_OWNER("&4✦&l ", "co-owner"),
+	DEVELOPER("&3❈&b&o ", "developer"),
 	PLAT_ADMIN("&c&o", "platadmin"),
 	SR_ADMIN("&c", "sradmin"),
 	ADMIN("&c", "admin"),
@@ -23,18 +23,18 @@ public enum ServerRanks {
 	TRIAL_MOD("&3", "trialmod"),
 	HELPER("&b", "helper"),
 
-	PARTNER("&d&l", "partner"),
-	FAMOUS("&d&o", "famous"),
-	STREAMER("", "streamer"),
-	YOUTUBER("&5★&d", "youtube"),
+	PARTNER("&d&l ", "partner"),
+	FAMOUS("&d&o ", "famous"),
+	STREAMER("&5★&d&o ", "streamer"),
+	YOUTUBER("&5★&d ", "youtube"),
 	MINI_YT("&d", "miniyt"),
 
-	WATER("&3❃", "water"),
-	KRAKEN_PLUS("&2❃", "kraken+"),
-	KRAKEN("&2❃", "kraken"),
-	POSEIDON("&b⚘&3", "poseidon"),
-	APOLO("&3❋&b", "apolo"),
-	TRITON("&6‡&e", "triton"),
+	WATER("&3❃ ", "water"),
+	KRAKEN_PLUS("&2❃ ", "kraken+"),
+	KRAKEN("&2❃ ", "kraken"),
+	POSEIDON("&b⚘&3 ", "poseidon"),
+	APOLO("&3❋&b ", "apolo"),
+	TRITON("&6‡&e ", "triton"),
 	VERIFIED("&f", "verified"),
 	USER("&7", "user"),
 	DEFAULT("&7", "default");
