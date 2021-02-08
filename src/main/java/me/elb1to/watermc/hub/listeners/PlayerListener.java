@@ -99,9 +99,9 @@ public class PlayerListener implements Listener {
 		player.playSound(loc, Sound.VILLAGER_YES, 1.0F, 1.0F);
 
 		player.getInventory().clear();
-		player.getInventory().setItem(1, new ItemBuilder(Material.ENDER_PEARL).setName(CC.translate("&b&lPerla Acuática &8(&7Clic-Derecho&8)")).get());
-		player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS).setName(CC.translate("&b&lServidores &8(&7Clic-Derecho&8)")).get());
-		player.getInventory().setItem(7, new ItemBuilder(Material.REDSTONE_COMPARATOR).setName(CC.translate("&b&lOpciones &8(&7Clic-Derecho&8)")).get());
+		player.getInventory().setItem(1, new ItemBuilder(Material.ENDER_PEARL).setName(CC.translate("&b&lPerla Acuática. &8(&7Clic-Derecho&8)")).get());
+		player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS).setName(CC.translate("&b&lServidores. &8(&7Clic-Derecho&8)")).get());
+		player.getInventory().setItem(7, new ItemBuilder(Material.REDSTONE_COMPARATOR).setName(CC.translate("&b&lOpciones. &8(&7Clic-Derecho&8)")).get());
 
 		if (hubPlayer.isFlyMode()) {
 			player.setAllowFlight(true);
@@ -161,10 +161,10 @@ public class PlayerListener implements Listener {
 
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (event.getItem() != null && event.getItem().getItemMeta() != null && event.getItem().getItemMeta().getDisplayName() != null) {
-				if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(CC.translate("&b&lServidores &8(&7Clic-Derecho&8)"))) {
+				if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(CC.translate("&b&lServidores. &8(&7Clic-Derecho&8)"))) {
 					new SelectorMenu().openMenu(player);
 				}
-				if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(CC.translate("&b&lOpciones &8(&7Clic-Derecho&8)"))) {
+				if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(CC.translate("&b&lOpciones. &8(&7Clic-Derecho&8)"))) {
 					new SettingsMenu(hubPlayer).openMenu(player);
 				}
 			}
