@@ -33,10 +33,10 @@ public class QueueCheckCommand extends BaseCommand {
 				} else {
 					Queue queue = Hub.getInstance().getQueueManager().getPlayerQueue(target);
 					Hub.getInstance().getMessagesConfig().getStringList("PLAYER.QUEUE-CHECK").forEach(msg -> {
-						msg = msg.replace("{PLAYERNAME}", target.getName());
-						msg = msg.replace("{QUEUE-NAME}", queue.getServer());
-						msg = msg.replace("{QUEUE-BUNGEE-NAME}", queue.getBungeeName());
-						msg = msg.replace("{QUEUE-POSITION}", String.valueOf(queue.getPosition(player)));
+						msg = msg.replace("<PLAYERNAME>", target.getName());
+						msg = msg.replace("<QUEUE-NAME>", queue.getServer());
+						msg = msg.replace("<QUEUE-BUNGEE-NAME>", queue.getBungeeName());
+						msg = msg.replace("<QUEUE-POSITION>", String.valueOf(queue.getPosition(player)));
 
 						player.sendMessage(CC.translate(msg));
 					});

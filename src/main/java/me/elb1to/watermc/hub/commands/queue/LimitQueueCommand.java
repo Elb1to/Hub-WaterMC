@@ -39,8 +39,8 @@ public class LimitQueueCommand extends BaseCommand {
 
 			queue.setLimit(limit);
 			player.sendMessage(CC.translate(Hub.getInstance().getMessagesConfig().getString("QUEUE.LIMIT")
-					.replace("{QUEUE-LIMIT}", String.valueOf(limit))
-					.replace("{QUEUE-NAME}", queue.getServer())
+					.replace("<QUEUE-LIMIT>", String.valueOf(limit))
+					.replace("<QUEUE-NAME>", queue.getServer())
 			));
 		}
 	}

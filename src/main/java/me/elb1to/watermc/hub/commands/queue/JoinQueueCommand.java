@@ -22,7 +22,7 @@ public class JoinQueueCommand extends BaseCommand {
 
 		if (Hub.getInstance().getQueueManager().isQueueing(player)) {
 			player.sendMessage(CC.translate(Hub.getInstance().getMessagesConfig().getString("QUEUE.ALREADY-QUEUEING")
-					.replace("{QUEUE-NAME}", Hub.getInstance().getQueueManager().getPlayerQueue(player).getServer())
+					.replace("<QUEUE-NAME>", Hub.getInstance().getQueueManager().getPlayerQueue(player).getServer())
 			));
 
 			return;

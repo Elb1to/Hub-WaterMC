@@ -31,7 +31,7 @@ public class PauseQueueCommand extends BaseCommand {
 		} else {
 			queue.setPaused(!queue.isPaused());
 			player.sendMessage(CC.translate(Hub.getInstance().getMessagesConfig().getString("QUEUE." + (queue.isPaused() ? "" : "UN-") + "PAUSED")
-					.replace("{QUEUE-NAME}", queue.getServer())
+					.replace("<QUEUE-NAME>", queue.getServer())
 			));
 		}
 	}
