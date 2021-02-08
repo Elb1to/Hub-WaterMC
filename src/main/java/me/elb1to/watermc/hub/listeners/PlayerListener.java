@@ -23,6 +23,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 
 import java.util.Objects;
@@ -248,6 +249,27 @@ public class PlayerListener implements Listener {
 
 				event.setCancelled(true);
 			}
+		}
+	}
+
+	@EventHandler
+	public void onMoveItem(InventoryClickEvent event) {
+		if (event.getClickedInventory() == null || event.getClickedInventory().getName() == null) {
+			return;
+		}
+		if (event.getWhoClicked().getGameMode() != GameMode.CREATIVE) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onVoidFall(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
+		Location spawnLocation = player.getPlayer().getWorld().getSpawnLocation();
+		Location location = player.getPlayer().getLocation();
+
+		if (location.getY() <= 0) {
+			player.teleport(spawnLocation);
 		}
 	}
 
