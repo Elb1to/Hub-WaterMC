@@ -99,7 +99,7 @@ public class PlayerListener implements Listener {
 		player.playSound(loc, Sound.VILLAGER_YES, 1.0F, 1.0F);
 
 		player.getInventory().clear();
-		player.getInventory().setItem(1, new ItemBuilder(Material.ENDER_PEARL).setName(CC.translate("&b&lPerla Acuatica &8(&7Clic-Derecho&8)")).get());
+		player.getInventory().setItem(1, new ItemBuilder(Material.ENDER_PEARL).setName(CC.translate("&b&lPerla Acuática &8(&7Clic-Derecho&8)")).get());
 		player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS).setName(CC.translate("&b&lServidores &8(&7Clic-Derecho&8)")).get());
 		player.getInventory().setItem(7, new ItemBuilder(Material.REDSTONE_COMPARATOR).setName(CC.translate("&b&lOpciones &8(&7Clic-Derecho&8)")).get());
 
