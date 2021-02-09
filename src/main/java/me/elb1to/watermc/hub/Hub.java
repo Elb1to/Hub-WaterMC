@@ -6,17 +6,20 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import lombok.Getter;
+import me.elb1to.watermc.hub.commands.admin.DeleteDataCommand;
+import me.elb1to.watermc.hub.commands.admin.PlayerDebugCommand;
 import me.elb1to.watermc.hub.commands.general.HelpCommand;
 import me.elb1to.watermc.hub.commands.general.SpawnCommand;
 import me.elb1to.watermc.hub.commands.general.SudoAllCommand;
 import me.elb1to.watermc.hub.commands.queue.*;
 import me.elb1to.watermc.hub.listeners.*;
+import me.elb1to.watermc.hub.managers.HubPlayerManager;
 import me.elb1to.watermc.hub.managers.MongoDbManager;
 import me.elb1to.watermc.hub.managers.QueueManager;
 import me.elb1to.watermc.hub.providers.ScoreboardProvider;
 import me.elb1to.watermc.hub.providers.TablistProvider;
 import me.elb1to.watermc.hub.tasks.PlayerDataWorkerRunnable;
-import me.elb1to.watermc.hub.user.HubPlayer;
+import me.elb1to.watermc.hub.user.NewHubPlayer;
 import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.command.CommandFramework;
 import me.elb1to.watermc.hub.utils.config.FileConfig;
@@ -49,6 +52,7 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 	private Chat vaultChat = null;
 
 	private CommandFramework commandFramework;
+	private HubPlayerManager hubPlayerManager;
 	private QueueManager queueManager;
 
 	private MongoDbManager mongoDbManager;
@@ -81,6 +85,7 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 		this.mongoDbManager = new MongoDbManager();
 		this.mongoDbManager.connect();
 
+		this.hubPlayerManager = new HubPlayerManager();
 		this.queueManager = new QueueManager();
 
 		Bukkit.getConsoleSender().sendMessage(CC.CHAT_BAR);
@@ -88,10 +93,10 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 		Bukkit.getConsoleSender().sendMessage(CC.translate("&7Made on &bFrozed Club Development &7by &bElb1to"));
 		Bukkit.getConsoleSender().sendMessage(CC.CHAT_BAR);
 
-		//playerDataWorkerRunnable = new PlayerDataWorkerRunnable();
-		//Thread thread = new Thread(playerDataWorkerRunnable);
-		//thread.setName("Hub PlayerData Worker");
-		//thread.start();
+		playerDataWorkerRunnable = new PlayerDataWorkerRunnable();
+		Thread thread = new Thread(playerDataWorkerRunnable);
+		thread.setName("Hub PlayerData Worker");
+		thread.start();
 
 		Bukkit.getServer().getPluginManager().registerEvents(new PlayerUtils(), this);
 		registerStuff();
@@ -100,8 +105,8 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 
 	@Override
 	public void onDisable() {
-		for (HubPlayer hubPlayer : HubPlayer.getAllData()) {
-			hubPlayer.saveData(hubPlayer);
+		for (NewHubPlayer newHubPlayer : this.getHubPlayerManager().getAllData()) {
+			this.hubPlayerManager.saveData(newHubPlayer);
 		}
 
 		if (countPlayerTask != null) {
@@ -138,9 +143,14 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 	}
 
 	private void registerCommands() {
+		new QueueDebugCommand();
+		new PlayerDebugCommand();
+
 		new SpawnCommand();
 		new HelpCommand();
 		new SudoAllCommand();
+
+		new DeleteDataCommand();
 
 		new QueueCommand();
 		new QueueInfoCommand();
