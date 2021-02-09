@@ -1,12 +1,13 @@
 package me.elb1to.watermc.hub.listeners;
 
 import com.nametagedit.plugin.NametagEdit;
-import com.nametagedit.plugin.api.events.NametagEvent;
 import me.elb1to.watermc.hub.Hub;
 import me.elb1to.watermc.hub.impl.Queue;
 import me.elb1to.watermc.hub.managers.QueueManager;
 import me.elb1to.watermc.hub.providers.ServerRanks;
-import me.elb1to.watermc.hub.user.HubPlayer;
+
+import me.elb1to.watermc.hub.user.NewHubPlayer;
+import me.elb1to.watermc.hub.user.PlayerState;
 import me.elb1to.watermc.hub.user.ui.selector.SelectorMenu;
 import me.elb1to.watermc.hub.user.ui.settings.SettingsMenu;
 import me.elb1to.watermc.hub.utils.CC;
@@ -30,53 +31,35 @@ import java.util.Objects;
 
 /**
  * Created by Elb1to
- * Project: FrozedHubDeluxe
- * Date: 11/09/2020 @ 16:03
+ * Project: Hub [WaterMC]
+ * Date: 04/02/2020 @ 16:03
  */
 public class PlayerListener implements Listener {
 
 	private final Hub plugin = Hub.getInstance();
-	ConfigCursor messages = new ConfigCursor(Hub.getInstance().getMessagesConfig(), "PLAYER");
-	ConfigCursor settings = new ConfigCursor(Hub.getInstance().getSettingsConfig(), "SERVER");
 	private QueueManager manager = Hub.getInstance().getQueueManager();
 
-	@EventHandler
-	public void gearPlayerOnJoin(PlayerJoinEvent event) {
-		Player player = event.getPlayer();
-		/*Armor armor = plugin.getArmorManager().getArmorByRank(plugin.getCoreHandler().getRankName(player));
-		if (armor != null) {
-			armor.handlePlayer(player);
-		}*/
-	}
+	ConfigCursor messages = new ConfigCursor(Hub.getInstance().getMessagesConfig(), "PLAYER");
+	ConfigCursor settings = new ConfigCursor(Hub.getInstance().getSettingsConfig(), "SERVER");
 
 	@EventHandler
-	public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent event) {
-		if (!Hub.getInstance().getMongoDbManager().isAuthentication()) {
+	public void onPreLogin(AsyncPlayerPreLoginEvent event) {
+		Player player = Bukkit.getServer().getPlayerExact(event.getName());
+		if (player == null) {
 			return;
 		}
 
-		HubPlayer hubPlayer = HubPlayer.getByUuid(event.getUniqueId());
-		if (hubPlayer == null) {
-			hubPlayer = new HubPlayer(event.getUniqueId());
-		}
-		if (!hubPlayer.isDataLoaded()) {
-			hubPlayer.loadData(hubPlayer);
-		}
-		if (!hubPlayer.isDataLoaded()) {
-			event.setLoginResult(AsyncPlayerPreLoginEvent.Result.KICK_OTHER);
-			event.setKickMessage(CC.translate("&cAn error has occurred while loading your profile. Please reconnect."));
+		if (player.isOnline()) {
+			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "§cA player with the same name is already connected!\n§cPlease try again later.");
 		}
 	}
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
-		if (hubPlayer == null) {
-			hubPlayer = new HubPlayer(player.getUniqueId());
-		} else {
-			hubPlayer.loadData(hubPlayer);
-		}
+		NewHubPlayer newHubPlayer = this.plugin.getHubPlayerManager().getPlayerData(player.getUniqueId());
+		this.plugin.getHubPlayerManager().createPlayerData(player);
+
 		for (int i = 0; i < 80; i++) {
 			player.sendMessage(" ");
 		}
@@ -86,6 +69,14 @@ public class PlayerListener implements Listener {
 				player.sendMessage(CC.translate(CC.centerMessage(welcomeMsg).replace("{0}", "\n")));
 			} else {
 				player.sendMessage(CC.translate(welcomeMsg.replace("{0}", "\n")));
+			}
+		}
+
+		if (newHubPlayer != null) {
+			newHubPlayer.setPlayerState(PlayerState.LOBBY);
+			if (newHubPlayer.isFlyMode()) {
+				player.setAllowFlight(true);
+				player.setFlying(true);
 			}
 		}
 
@@ -104,11 +95,6 @@ public class PlayerListener implements Listener {
 		player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS).setName(CC.translate("&b&lServidores. &8(&7Clic-Derecho&8)")).get());
 		player.getInventory().setItem(7, new ItemBuilder(Material.REDSTONE_COMPARATOR).setName(CC.translate("&b&lOpciones. &8(&7Clic-Derecho&8)")).get());
 
-		if (hubPlayer.isFlyMode()) {
-			player.setAllowFlight(true);
-			player.setFlying(true);
-		}
-
 		Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
 			if (Bukkit.getPluginManager().getPlugin("NametagEdit") != null) {
 				NametagEdit.getApi().setPrefix(player, getNametagColor(player));
@@ -121,25 +107,22 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onPlayerKickEvent(PlayerKickEvent event) {
 		Player player = event.getPlayer();
-		saveData(player);
+		NewHubPlayer newHubPlayer = this.plugin.getHubPlayerManager().getPlayerData(player.getUniqueId());
+		newHubPlayer.setPlayerState(PlayerState.LOBBY);
 	}
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
+		NewHubPlayer newHubPlayer = this.plugin.getHubPlayerManager().getPlayerData(player.getUniqueId());
 		event.setQuitMessage(null);
 
-		if (manager.isQueueing(event.getPlayer())) {
+		if (manager.isQueueing(player)) {
 			Queue queue = manager.getPlayerQueue(player);
 			queue.remove(player);
 		}
 
-		HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
-		if (hubPlayer.isFlyMode()) {
-			player.setAllowFlight(false);
-		}
-
-		saveData(player);
+		newHubPlayer.setPlayerState(PlayerState.LOBBY);
 	}
 
 	@EventHandler
@@ -158,7 +141,7 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onItemInteraction(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-		HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+		NewHubPlayer newHubPlayer = this.plugin.getHubPlayerManager().getPlayerData(player.getUniqueId());
 
 		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (event.getItem() != null && event.getItem().getItemMeta() != null && event.getItem().getItemMeta().getDisplayName() != null) {
@@ -166,7 +149,7 @@ public class PlayerListener implements Listener {
 					new SelectorMenu().openMenu(player);
 				}
 				if (event.getItem().getItemMeta().getDisplayName().equalsIgnoreCase(CC.translate("&b&lOpciones. &8(&7Clic-Derecho&8)"))) {
-					new SettingsMenu(hubPlayer).openMenu(player);
+					new SettingsMenu(newHubPlayer).openMenu(player);
 				}
 			}
 		}
@@ -374,14 +357,14 @@ public class PlayerListener implements Listener {
 		}.runTaskTimer(this.plugin, 0, 1L);
 	}*/
 
-	private void saveData(Player player) {
-		HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
-		if (hubPlayer == null) {
-			return;
-		}
+	//private void saveData(Player player) {
+	//	HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+	//	if (hubPlayer == null) {
+	//		return;
+	//	}
 
-		hubPlayer.saveData(hubPlayer);
-	}
+	//	hubPlayer.saveData(hubPlayer);
+	//}
 
 	private String getNametagColor(Player player) {
 		String color;

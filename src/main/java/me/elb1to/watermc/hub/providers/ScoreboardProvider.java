@@ -2,7 +2,7 @@ package me.elb1to.watermc.hub.providers;
 
 import me.elb1to.watermc.hub.Hub;
 import me.elb1to.watermc.hub.impl.Queue;
-import me.elb1to.watermc.hub.user.HubPlayer;
+import me.elb1to.watermc.hub.user.NewHubPlayer;
 import me.elb1to.watermc.hub.user.PlayerState;
 import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.scoreboard.BoardAdapter;
@@ -34,7 +34,7 @@ public class ScoreboardProvider implements BoardAdapter {
 	@Override
 	public List<String> getLines(Player player) {
 		List<String> lines = new ArrayList<>();
-		HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+		NewHubPlayer newHubPlayer = Hub.getInstance().getHubPlayerManager().getPlayerData(player.getUniqueId());
 		Queue queue = this.plugin.getQueueManager().getPlayerQueue(player);
 
 		lines.add(CC.SB_BAR);
@@ -43,11 +43,11 @@ public class ScoreboardProvider implements BoardAdapter {
 		lines.add(CC.translate(" "));
 		lines.add(CC.translate("&fRango:"));
 		lines.add(CC.translate(this.plugin.getVaultPerm().getPrimaryGroup(player)));
-		if (hubPlayer.getState().equals(PlayerState.QUEUE)) {
+		if (newHubPlayer.getPlayerState().equals(PlayerState.QUEUE)) {
 			lines.add(CC.translate(" "));
 			lines.add(CC.translate("&fEn Cola:"));
-			lines.add(CC.translate("  &bServer&f: &3" + queue.getServer()));
-			lines.add(CC.translate("  &bPosicion&f: &3" + queue.getPosition(player) + "/" + queue.getPlayers().size()));
+			lines.add(CC.translate(" &bServer&f: &3" + queue.getServer()));
+			lines.add(CC.translate(" &bPosicion&f: &3" + queue.getPosition(player) + "/" + queue.getPlayers().size()));
 		}
 		lines.add(CC.translate(" "));
 		lines.add(CC.translate("&bwatermc.gg"));

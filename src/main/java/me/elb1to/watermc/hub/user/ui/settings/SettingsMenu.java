@@ -1,7 +1,7 @@
 package me.elb1to.watermc.hub.user.ui.settings;
 
 import lombok.AllArgsConstructor;
-import me.elb1to.watermc.hub.user.HubPlayer;
+import me.elb1to.watermc.hub.user.NewHubPlayer;
 import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.extra.ItemBuilder;
 import me.elb1to.watermc.hub.utils.menu.Button;
@@ -26,10 +26,10 @@ import static me.elb1to.watermc.hub.utils.menu.Button.playSuccess;
  */
 public class SettingsMenu extends Menu {
 
-	private HubPlayer hubPlayer;
+	private NewHubPlayer newHubPlayer;
 
-	public SettingsMenu(HubPlayer hubPlayer) {
-		this.hubPlayer = hubPlayer;
+	public SettingsMenu(NewHubPlayer newHubPlayer) {
+		this.newHubPlayer = newHubPlayer;
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class SettingsMenu extends Menu {
 			return new ItemBuilder(Material.EMERALD)
 					.setName("&bMostrar Particulas")
 					.setLore(Arrays.asList(
-							"&fActualmente " + (hubPlayer.isHidingParticles() ? "&c&locultas" : "&a&lvisibles"),
+							"&fActualmente " + (newHubPlayer.isHidingParticles() ? "&c&locultas" : "&a&lvisibles"),
 							" ",
 							"&7Si están ocultas no podras",
 							"&7ver las particulas de nadie"
@@ -81,9 +81,9 @@ public class SettingsMenu extends Menu {
 
 		@Override
 		public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
-			playSound(!hubPlayer.isHidingParticles(), player);
-			hubPlayer.setHidingParticles(!hubPlayer.isHidingParticles());
-			player.sendMessage(CC.translate(hubPlayer.isHidingParticles() ? "&cOcultando todas las particulas en el servidor..." : "&aMostrando todas las particulas en el servidor!"));
+			playSound(!newHubPlayer.isHidingParticles(), player);
+			newHubPlayer.setHidingParticles(!newHubPlayer.isHidingParticles());
+			player.sendMessage(CC.translate(newHubPlayer.isHidingParticles() ? "&cOcultando todas las particulas en el servidor..." : "&aMostrando todas las particulas en el servidor!"));
 		}
 	}
 
@@ -95,7 +95,7 @@ public class SettingsMenu extends Menu {
 			return new ItemBuilder(Material.EYE_OF_ENDER)
 					.setName("&bMostrar Jugadores")
 					.setLore(Arrays.asList(
-							"&fActualmente " + (hubPlayer.isHidingPlayers() ? "&c&locultos" : "&a&lvisibles"),
+							"&fActualmente " + (newHubPlayer.isHidingPlayers() ? "&c&locultos" : "&a&lvisibles"),
 							" ",
 							"&7Si los jugadores están ocultos",
 							"&7todos serán invisibles para ti."
@@ -105,9 +105,9 @@ public class SettingsMenu extends Menu {
 
 		@Override
 		public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
-			playSound(!hubPlayer.isHidingPlayers(), player);
-			hubPlayer.setHidingPlayers(!hubPlayer.isHidingPlayers());
-			player.sendMessage(CC.translate(hubPlayer.isHidingPlayers() ? "&cOcultando todas los jugadores en el servidor..." : "&aMostrando todos los jugadores en el servidor!"));
+			playSound(!newHubPlayer.isHidingPlayers(), player);
+			newHubPlayer.setHidingPlayers(!newHubPlayer.isHidingPlayers());
+			player.sendMessage(CC.translate(newHubPlayer.isHidingPlayers() ? "&cOcultando todas los jugadores en el servidor..." : "&aMostrando todos los jugadores en el servidor!"));
 		}
 	}
 
@@ -119,7 +119,7 @@ public class SettingsMenu extends Menu {
 			return new ItemBuilder(Material.FEATHER)
 					.setName("&bActivar Vuelo")
 					.setLore(Arrays.asList(
-							"&fActualmente " + (hubPlayer.isFlyMode() ? "&a&lactivado" : "&c&ldesactivado"),
+							"&fActualmente " + (newHubPlayer.isFlyMode() ? "&a&lactivado" : "&c&ldesactivado"),
 							" ",
 							"&7Si esta activado podras",
 							"&7volar por todo el Hub."
@@ -129,9 +129,9 @@ public class SettingsMenu extends Menu {
 
 		@Override
 		public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
-			playSound(!hubPlayer.isFlyMode(), player);
-			hubPlayer.setFlyMode(!hubPlayer.isFlyMode());
-			player.sendMessage(CC.translate(hubPlayer.isFlyMode() ? "&aHaz activado el modo de vuelo!" : "&cHaz desactivado el modo de vuelo."));
+			playSound(!newHubPlayer.isFlyMode(), player);
+			newHubPlayer.setFlyMode(!newHubPlayer.isFlyMode());
+			player.sendMessage(CC.translate(newHubPlayer.isFlyMode() ? "&aHaz activado el modo de vuelo!" : "&cHaz desactivado el modo de vuelo."));
 		}
 	}
 

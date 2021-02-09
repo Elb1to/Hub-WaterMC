@@ -42,11 +42,13 @@ public class TablistProvider implements TabAdapter {
 		GameProfile profile = ((CraftPlayer) player).getHandle().getProfile();
 		Property property = profile.getProperties().get("textures").stream().findFirst().orElse(null);
 
-		int tokens = PlayerData.getData(player.getUniqueId()).getTokens();
-
 		// Header
 		lines.add(new TabEntry(1, 1, "&3&lWaterMC").setPing(-1));
-		lines.add(new TabEntry(1, 2, "&7Jugadores: &f" + this.plugin.getNetworkTotalPlayer("BUNGEE", true) + "&7/&f2,500").setPing(-1));
+		try {
+			lines.add(new TabEntry(1, 2, "&7Jugadores: &f" + this.plugin.getNetworkTotalPlayer("BUNGEE", true) + "&7/&f2,500").setPing(-1));
+		} catch (Exception e) {
+			lines.add(new TabEntry(1, 2, "&7Jugadores: &cERROR();&7/&f2,500").setPing(-1));
+		}
 
 		// Player Info
 		lines.add(new TabEntry(1, 4, "&3&lPerfil").setPing(-1));
@@ -60,7 +62,11 @@ public class TablistProvider implements TabAdapter {
 		lines.add(new TabEntry(0, 6, this.plugin.getVaultPerm().getPrimaryGroup(player)).setPing(-1));
 
 		lines.add(new TabEntry(2, 5, "&3&lTokens").setPing(-1));
-		lines.add(new TabEntry(2, 6, "" + tokens).setPing(-1));
+		try {
+			lines.add(new TabEntry(2, 6, "" + PlayerData.getData(player.getUniqueId()).getTokens()).setPing(-1));
+		} catch (Exception e) {
+			lines.add(new TabEntry(2, 6, "&cERROR();").setPing(-1));
+		}
 
 		// Servers
 		lines.add(new TabEntry(1, 8, "&3&lServidores").setPing(-1));

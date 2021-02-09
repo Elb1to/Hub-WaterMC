@@ -1,6 +1,7 @@
 package me.elb1to.watermc.hub.listeners;
 
-import me.elb1to.watermc.hub.user.HubPlayer;
+import me.elb1to.watermc.hub.Hub;
+import me.elb1to.watermc.hub.user.NewHubPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -21,8 +22,8 @@ public class DoubleJumpListener implements Listener {
             return;
         }
 
-        HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
-        if (!hubPlayer.isFlyMode()) {
+        NewHubPlayer newHubPlayer = Hub.getInstance().getHubPlayerManager().getPlayerData(player.getUniqueId());
+        if (!newHubPlayer.isFlyMode()) {
             event.setCancelled(true);
             player.setAllowFlight(true);
             player.setFlying(false);
@@ -34,9 +35,9 @@ public class DoubleJumpListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
+        NewHubPlayer newHubPlayer = Hub.getInstance().getHubPlayerManager().getPlayerData(player.getUniqueId());
 
-        if (!hubPlayer.isFlyMode()) {
+        if (!newHubPlayer.isFlyMode()) {
             if (player.getGameMode() != GameMode.CREATIVE && player.getLocation().subtract(0.0, 2.0, 0.0).getBlock().getType() != Material.AIR && !player.isFlying()) {
                 player.setAllowFlight(true);
             }
