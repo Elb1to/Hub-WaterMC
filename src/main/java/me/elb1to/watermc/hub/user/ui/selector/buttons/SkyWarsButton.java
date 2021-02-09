@@ -1,5 +1,6 @@
 package me.elb1to.watermc.hub.user.ui.selector.buttons;
 
+import me.elb1to.watermc.hub.Hub;
 import me.elb1to.watermc.hub.impl.Queue;
 import me.elb1to.watermc.hub.utils.extra.ItemBuilder;
 import me.elb1to.watermc.hub.utils.menu.Button;
@@ -39,7 +40,13 @@ public class SkyWarsButton extends Button {
 
 	@Override
 	public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
+		player.closeInventory();
+
+		if (Hub.getInstance().getQueueManager().isQueueing(player)) {
+			playFail(player);
+			return;
+		}
 		playSuccess(player);
-		queue.add(player);
+		player.performCommand("queue join SKYWARS");
 	}
 }

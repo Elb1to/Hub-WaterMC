@@ -38,7 +38,13 @@ public class SkyKitsButton extends Button {
 
 	@Override
 	public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
+		player.closeInventory();
+
+		if (Hub.getInstance().getQueueManager().isQueueing(player)) {
+			playFail(player);
+			return;
+		}
 		playSuccess(player);
-		queue.add(player);
+		player.performCommand("queue join SKYKITS");
 	}
 }
