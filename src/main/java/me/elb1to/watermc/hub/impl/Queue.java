@@ -6,7 +6,7 @@ import com.google.common.io.ByteStreams;
 import lombok.Getter;
 import lombok.Setter;
 import me.elb1to.watermc.hub.Hub;
-import me.elb1to.watermc.hub.user.HubPlayer;
+import me.elb1to.watermc.hub.user.NewHubPlayer;
 import me.elb1to.watermc.hub.user.PlayerState;
 import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.config.ConfigCursor;
@@ -58,10 +58,10 @@ public class Queue {
             public void run() {
                 if (!paused && !getPlayers().isEmpty()) {
                     getPlayers().forEach(player -> {
-                        HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
-                        if (getPlayers().get(0) == player && hubPlayer != null) {
-                            send(player);
-                            remove(player);
+                        if (getPlayers().get(0) == player) {
+                            if (getPlayers() != null && player != null) {
+                                send(player);
+                            }
                         } else {
                             Hub.getInstance().getMessagesConfig().getConfiguration().getStringList("QUEUE.QUEUEING-INFO").forEach(s -> {
                                 s = s.replace("<QUEUE-NAME>", server);
@@ -82,9 +82,10 @@ public class Queue {
     }
 
     public void add(Player player) {
+        NewHubPlayer newHubPlayer = Hub.getInstance().getHubPlayerManager().getPlayerData(player.getUniqueId());
+        newHubPlayer.setPlayerState(PlayerState.QUEUE);
         if (player.hasPermission(bypassPermission) || getPriority(player) == 0) {
             send(player);
-            remove(player);
             return;
         }
 
@@ -97,8 +98,6 @@ public class Queue {
 
         reload();
 
-        HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
-        hubPlayer.setState(PlayerState.QUEUE);
         player.sendMessage(CC.translate(this.plugin.getMessagesConfig().getConfiguration().getString("QUEUE.JOINED").replace("<QUEUE-NAME>", server).replace("<QUEUE-BUNGEE-NAME>", bungeeName)));
     }
 
@@ -106,14 +105,10 @@ public class Queue {
         uuids.remove(player.getUniqueId());
         reload();
 
-        HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
-        hubPlayer.setState(PlayerState.LOBBY);
         player.sendMessage(CC.translate(this.plugin.getMessagesConfig().getConfiguration().getString("QUEUE.LEFT").replace("<QUEUE-NAME>", server).replace("<QUEUE-BUNGEE-NAME>", bungeeName)));
     }
 
     private void send(Player player) {
-        HubPlayer hubPlayer = HubPlayer.getByUuid(player.getUniqueId());
-        hubPlayer.setState(PlayerState.LOBBY);
         player.sendMessage(CC.translate(this.plugin.getMessagesConfig().getConfiguration().getString("QUEUE.BEING-SENT").replace("<QUEUE-NAME>", server).replace("<QUEUE-BUNGEE-NAME>", bungeeName)));
 
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
