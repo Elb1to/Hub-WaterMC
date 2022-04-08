@@ -4,22 +4,20 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.*;
+import java.util.UUID;
 
 /**
  * Created by Elb1to
  * Project: Hub
  * Date: 2/8/2021 @ 1:14 PM
  */
-@Getter
-@Setter
-@RequiredArgsConstructor
+@Getter @Setter @RequiredArgsConstructor
 public class NewHubPlayer {
 
 	private final UUID uniqueId;
 	private PlayerState playerState = PlayerState.LOBBY;
 
-	private String currentArmor;
+	private String clickedHCFServer;
 	private String currentParticle;
 
 	private boolean hidingParticles = false;

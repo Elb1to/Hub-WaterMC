@@ -26,7 +26,7 @@ import static me.elb1to.watermc.hub.utils.menu.Button.playSuccess;
  */
 public class SettingsMenu extends Menu {
 
-	private NewHubPlayer newHubPlayer;
+	private final NewHubPlayer newHubPlayer;
 
 	public SettingsMenu(NewHubPlayer newHubPlayer) {
 		this.newHubPlayer = newHubPlayer;
@@ -129,6 +129,11 @@ public class SettingsMenu extends Menu {
 
 		@Override
 		public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
+			if (!player.hasPermission("hub.perks.fly")) {
+				player.sendMessage(CC.translate("&cNo tienes permisos para usar el modo de vuelo."));
+				return;
+			}
+
 			playSound(!newHubPlayer.isFlyMode(), player);
 			newHubPlayer.setFlyMode(!newHubPlayer.isFlyMode());
 			player.sendMessage(CC.translate(newHubPlayer.isFlyMode() ? "&aHaz activado el modo de vuelo!" : "&cHaz desactivado el modo de vuelo."));
@@ -144,11 +149,7 @@ public class SettingsMenu extends Menu {
 					.setName("&bParticulas")
 					.setLore(Arrays.asList(
 							"&7Al clickear aquí podras",
-							"&7escoger particulas para ti!",
-							" ",
-							"&7Tipos de particulas:",
-							"&8 > &aJugador",
-							"&8 > &aDoble Salto"
+							"&7escoger particulas para ti!"
 							)
 					).get();
 		}

@@ -5,14 +5,15 @@ import me.elb1to.watermc.hub.Hub;
 import me.elb1to.watermc.hub.impl.Queue;
 import me.elb1to.watermc.hub.managers.QueueManager;
 import me.elb1to.watermc.hub.providers.ServerRanks;
-
 import me.elb1to.watermc.hub.user.NewHubPlayer;
 import me.elb1to.watermc.hub.user.PlayerState;
+import me.elb1to.watermc.hub.user.particles.*;
 import me.elb1to.watermc.hub.user.ui.selector.SelectorMenu;
 import me.elb1to.watermc.hub.user.ui.settings.SettingsMenu;
 import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.config.ConfigCursor;
 import me.elb1to.watermc.hub.utils.extra.ItemBuilder;
+import me.elb1to.watermc.hub.utils.menu.Button;
 import me.ryzeon.rtags.data.player.PlayerData;
 import net.luckperms.api.LuckPermsProvider;
 import org.bukkit.*;
@@ -26,6 +27,8 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Objects;
 
@@ -37,10 +40,25 @@ import java.util.Objects;
 public class PlayerListener implements Listener {
 
 	private final Hub plugin = Hub.getInstance();
-	private QueueManager manager = Hub.getInstance().getQueueManager();
-
 	ConfigCursor messages = new ConfigCursor(Hub.getInstance().getMessagesConfig(), "PLAYER");
 	ConfigCursor settings = new ConfigCursor(Hub.getInstance().getSettingsConfig(), "SERVER");
+	private BukkitTask runnable;
+	private QueueManager manager = Hub.getInstance().getQueueManager();
+
+	@EventHandler
+	public static void removePlayerFromQueue(PlayerLoginEvent event) {
+		Player player = event.getPlayer();
+		NewHubPlayer newHubPlayer = Hub.getInstance().getHubPlayerManager().getPlayerData(player.getUniqueId());
+
+		if (Hub.getInstance().getQueueManager().isQueueing(player)) {
+			Queue queue = Hub.getInstance().getQueueManager().getByString(newHubPlayer.getClickedHCFServer());
+			if (event.getResult().equals(PlayerLoginEvent.Result.KICK_OTHER)) {
+				queue.remove(player);
+				Button.playFail(player);
+				player.sendMessage(CC.translate("&cHas sido removido de la cola porque tu deathban aun no expira."));
+			}
+		}
+	}
 
 	@EventHandler
 	public void onPreLogin(AsyncPlayerPreLoginEvent event) {
@@ -109,6 +127,7 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 		NewHubPlayer newHubPlayer = this.plugin.getHubPlayerManager().getPlayerData(player.getUniqueId());
 		newHubPlayer.setPlayerState(PlayerState.LOBBY);
+		runnable.cancel();
 	}
 
 	@EventHandler
@@ -122,6 +141,7 @@ public class PlayerListener implements Listener {
 			queue.remove(player);
 		}
 
+		runnable.cancel();
 		newHubPlayer.setPlayerState(PlayerState.LOBBY);
 	}
 
@@ -257,42 +277,44 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler
-	public void onInteractionDripParticleTest(PlayerInteractEvent event) {
+	public void playParticleTest(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 
-		/*CandyParticle candyParticle = new CandyParticle();
-		FusionParticle fusionParticle = new FusionParticle();
-		YingYangParticle yingYangParticle = new YingYangParticle();
-		FlameRingsParticle flameRingsParticle = new FlameRingsParticle();
-		FrozedFieldParticle frozedFieldParticle = new FrozedFieldParticle();
-		EmeraldCrownParticle emeraldCrownParticle = new EmeraldCrownParticle();
-		RadialMeteorParticle radialMeteorParticle = new RadialMeteorParticle();
-		EmeraldSpiralParticle emeraldSpiralParticle = new EmeraldSpiralParticle();
-		RainbowTwirlsParticle rainbowTwirlsParticle = new RainbowTwirlsParticle();
+		TritonParticle tritonParticle = new TritonParticle();
+		ApoloParticle apoloParticle = new ApoloParticle();
+		PoseidonParticle poseidonParticle = new PoseidonParticle();
+		KrakenParticle krakenParticle = new KrakenParticle();
+		DeveloperParticle developerParticle = new DeveloperParticle();
+		KrakenPlusParticle krakenPlusParticle = new KrakenPlusParticle();
+		WaterParticle waterParticle = new WaterParticle();
 
-		new BukkitRunnable() {
+		runnable = new BukkitRunnable() {
 			public void run() {
-				if (player.getItemInHand().getType().equals(Material.DIAMOND_SWORD)) {
-					emeraldSpiralParticle.playParticle(player);
-				} else if (player.getItemInHand().getType().equals(Material.IRON_SWORD)) {
-					flameRingsParticle.playParticle(player);
-				} else if (player.getItemInHand().getType().equals(Material.GOLD_SWORD)) {
-					emeraldCrownParticle.playParticle(player);
-				} else if (player.getItemInHand().getType().equals(Material.WOOD_SWORD)) {
-					fusionParticle.playParticle(player);
-				} else if (player.getItemInHand().getType().equals(Material.STONE_SWORD)) {
-					yingYangParticle.playParticle(player);
-				} else if (player.getItemInHand().getType().equals(Material.IRON_AXE)) {
-					rainbowTwirlsParticle.playParticle(player);
-				} else if (player.getItemInHand().getType().equals(Material.GOLD_AXE)) {
-					candyParticle.playParticle(player);
-				} else if (player.getItemInHand().getType().equals(Material.DIAMOND_AXE)) {
-					radialMeteorParticle.playParticle(player);
-				} else if (player.getItemInHand().getType().equals(Material.STONE_AXE)) {
-					frozedFieldParticle.playParticleTest(player);
+				switch (player.getItemInHand().getType()) {
+					case EMERALD:
+						tritonParticle.playParticle(player);
+						break;
+					case GOLD_INGOT:
+						apoloParticle.playParticle(player);
+						break;
+					case DIAMOND:
+						poseidonParticle.playParticle(player);
+						break;
+					case WATER_BUCKET:
+						krakenParticle.playParticle(player);
+						break;
+					case IRON_INGOT:
+						krakenPlusParticle.playParticle(player);
+						break;
+					case SAPLING:
+						waterParticle.playParticle(player);
+						break;
+					case NETHER_STAR:
+						developerParticle.playParticle(player);
+						break;
 				}
 			}
-		}.runTaskTimerAsynchronously(Hub.getInstance(), 1, 1);*/
+		}.runTaskTimerAsynchronously(Hub.getInstance(), 1, 1);
 	}
 
 	/*@EventHandler
@@ -370,58 +392,87 @@ public class PlayerListener implements Listener {
 		String color;
 		String group = Objects.requireNonNull(LuckPermsProvider.get().getUserManager().getUser(player.getUniqueId())).getPrimaryGroup();
 
-		if (group.equalsIgnoreCase(ServerRanks.OWNER.getName())) {
-			color = ServerRanks.OWNER.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.CO_OWNER.getName())) {
-			color = ServerRanks.CO_OWNER.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.DEVELOPER.getName())) {
-			color = ServerRanks.DEVELOPER.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.PLAT_ADMIN.getName())) {
-			color = ServerRanks.PLAT_ADMIN.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.SR_ADMIN.getName())) {
-			color = ServerRanks.SR_ADMIN.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.ADMIN.getName())) {
-			color = ServerRanks.ADMIN.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.JR_ADMIN.getName())) {
-			color = ServerRanks.JR_ADMIN.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.SR_MOD.getName())) {
-			color = ServerRanks.SR_MOD.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.MOD_PLUS.getName())) {
-			color = ServerRanks.MOD_PLUS.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.MOD.getName())) {
-			color = ServerRanks.MOD.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.TRIAL_MOD.getName())) {
-			color = ServerRanks.TRIAL_MOD.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.HELPER.getName())) {
-			color = ServerRanks.HELPER.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.PARTNER.getName())) {
-			color = ServerRanks.PARTNER.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.FAMOUS.getName())) {
-			color = ServerRanks.FAMOUS.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.STREAMER.getName())) {
-			color = ServerRanks.STREAMER.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.YOUTUBER.getName())) {
-			color = ServerRanks.YOUTUBER.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.MINI_YT.getName())) {
-			color = ServerRanks.MINI_YT.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.WATER.getName())) {
-			color = ServerRanks.WATER.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.KRAKEN_PLUS.getName())) {
-			color = ServerRanks.KRAKEN_PLUS.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.KRAKEN.getName())) {
-			color = ServerRanks.KRAKEN.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.POSEIDON.getName())) {
-			color = ServerRanks.POSEIDON.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.APOLO.getName())) {
-			color = ServerRanks.APOLO.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.TRITON.getName())) {
-			color = ServerRanks.TRITON.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.VERIFIED.getName())) {
-			color = ServerRanks.VERIFIED.getNametag();
-		} else if (group.equalsIgnoreCase(ServerRanks.USER.getName())) {
-			color = ServerRanks.USER.getNametag();
-		} else {
-			color = ServerRanks.DEFAULT.getNametag();
+		switch (group.toLowerCase()) {
+			case "owner":
+				color = ServerRanks.OWNER.getNametag();
+				break;
+			case "co-owner":
+				color = ServerRanks.CO_OWNER.getNametag();
+				break;
+			case "developer":
+				color = ServerRanks.DEVELOPER.getNametag();
+				break;
+			case "platadmin":
+				color = ServerRanks.PLAT_ADMIN.getNametag();
+				break;
+			case "sradmin":
+				color = ServerRanks.SR_ADMIN.getNametag();
+				break;
+			case "admin":
+				color = ServerRanks.ADMIN.getNametag();
+				break;
+			case "jradmin":
+				color = ServerRanks.JR_ADMIN.getNametag();
+				break;
+			case "srmod":
+				color = ServerRanks.SR_MOD.getNametag();
+				break;
+			case "mod+":
+				color = ServerRanks.MOD_PLUS.getNametag();
+				break;
+			case "mod":
+				color = ServerRanks.MOD.getNametag();
+				break;
+			case "trialmod":
+				color = ServerRanks.TRIAL_MOD.getNametag();
+				break;
+			case "helper":
+				color = ServerRanks.HELPER.getNametag();
+				break;
+			case "partner":
+				color = ServerRanks.PARTNER.getNametag();
+				break;
+			case "famous":
+				color = ServerRanks.FAMOUS.getNametag();
+				break;
+			case "streamer":
+				color = ServerRanks.STREAMER.getNametag();
+				break;
+			case "youtube":
+				color = ServerRanks.YOUTUBER.getNametag();
+				break;
+			case "miniyt":
+				color = ServerRanks.MINI_YT.getNametag();
+				break;
+			case "water":
+				color = ServerRanks.WATER.getNametag();
+				break;
+			case "kraken+":
+				color = ServerRanks.KRAKEN_PLUS.getNametag();
+				break;
+			case "kraken":
+				color = ServerRanks.KRAKEN.getNametag();
+				break;
+			case "poseidon":
+				color = ServerRanks.POSEIDON.getNametag();
+				break;
+			case "apolo":
+				color = ServerRanks.APOLO.getNametag();
+				break;
+			case "triton":
+				color = ServerRanks.TRITON.getNametag();
+				break;
+			case "verified":
+				color = ServerRanks.VERIFIED.getNametag();
+				break;
+			case "user":
+				color = ServerRanks.USER.getNametag();
+				break;
+			case "default":
+				color = ServerRanks.DEFAULT.getNametag();
+				break;
+			default:
+				throw new IllegalStateException("Unexpected value: " + group.toLowerCase());
 		}
 
 		return color;

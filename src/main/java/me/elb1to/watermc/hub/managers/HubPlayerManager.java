@@ -34,7 +34,6 @@ public class HubPlayerManager {
 
 		Document document = Hub.getInstance().getMongoDbManager().getHubPlayerData().find(Filters.eq("uuid", NewHubPlayer.getUniqueId().toString())).first();
 		if (document == null) {
-			NewHubPlayer.setCurrentArmor("none");
 			NewHubPlayer.setCurrentParticle("none");
 
 			this.saveData(NewHubPlayer);
@@ -59,7 +58,6 @@ public class HubPlayerManager {
 		Document settingsDocument = new Document();
 
 		document.put("uuid", NewHubPlayer.getUniqueId().toString());
-		document.put("currentArmor", NewHubPlayer.getCurrentArmor());
 		document.put("currentParticle", NewHubPlayer.getCurrentParticle());
 
 		settingsDocument.put("hidingPlayers", NewHubPlayer.isHidingPlayers());

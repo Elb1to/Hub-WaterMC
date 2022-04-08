@@ -61,6 +61,8 @@ public class Queue {
                         if (getPlayers().get(0) == player) {
                             if (getPlayers() != null && player != null) {
                                 send(player);
+                                remove(player);
+                                Hub.getInstance().getHubPlayerManager().getPlayerData(player.getUniqueId()).setPlayerState(PlayerState.LOBBY);
                             }
                         } else {
                             Hub.getInstance().getMessagesConfig().getConfiguration().getStringList("QUEUE.QUEUEING-INFO").forEach(s -> {

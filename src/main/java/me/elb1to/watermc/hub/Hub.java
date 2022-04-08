@@ -56,7 +56,7 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 	private QueueManager queueManager;
 
 	private MongoDbManager mongoDbManager;
-	private FileConfig settingsConfig, databaseConfig, queuesConfig, messagesConfig, hotbarConfig, armorConfig;
+	private FileConfig settingsConfig, databaseConfig, queuesConfig, messagesConfig;
 
 	private PlayerDataWorkerRunnable playerDataWorkerRunnable;
 
@@ -71,9 +71,6 @@ public final class Hub extends JavaPlugin implements PluginMessageListener {
 		}
 
 		this.commandFramework = new CommandFramework(this);
-
-		this.armorConfig = new FileConfig(this, "armor.yml");
-		this.hotbarConfig = new FileConfig(this, "hotbar.yml");
 		this.queuesConfig = new FileConfig(this, "queues.yml");
 		this.databaseConfig = new FileConfig(this, "database.yml");
 		this.settingsConfig = new FileConfig(this, "settings.yml");

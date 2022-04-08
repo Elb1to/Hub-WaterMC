@@ -2,6 +2,7 @@ package me.elb1to.watermc.hub.user.ui.selector.buttons;
 
 import me.elb1to.watermc.hub.Hub;
 import me.elb1to.watermc.hub.impl.Queue;
+import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.extra.ItemBuilder;
 import me.elb1to.watermc.hub.utils.menu.Button;
 import org.bukkit.Material;
@@ -44,8 +45,10 @@ public class SkyWarsButton extends Button {
 
 		if (Hub.getInstance().getQueueManager().isQueueing(player)) {
 			playFail(player);
+			player.sendMessage(CC.translate("&cYa estás en cola!"));
 			return;
 		}
+
 		playSuccess(player);
 		player.performCommand("queue join SKYWARS");
 	}

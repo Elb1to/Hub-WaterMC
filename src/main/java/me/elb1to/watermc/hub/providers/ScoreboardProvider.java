@@ -46,7 +46,7 @@ public class ScoreboardProvider implements BoardAdapter {
 		if (newHubPlayer.getPlayerState().equals(PlayerState.QUEUE)) {
 			lines.add(CC.translate(" "));
 			lines.add(CC.translate("&fEn Cola:"));
-			lines.add(CC.translate(" &bServer&f: &3" + queue.getServer()));
+			lines.add(CC.translate(" &bServer&f: &3" + (queue.getServer() == null ? "NOT_FOUND" : queue.getServer())));
 			lines.add(CC.translate(" &bPosicion&f: &3" + queue.getPosition(player) + "/" + queue.getPlayers().size()));
 		}
 		lines.add(CC.translate(" "));

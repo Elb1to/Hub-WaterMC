@@ -8,7 +8,6 @@ import com.mojang.authlib.properties.Property;
 import me.elb1to.watermc.hub.Hub;
 import me.elb1to.watermc.hub.utils.CC;
 import me.ryzeon.rtags.data.player.PlayerData;
-import me.ryzeon.rtags.rTagsAPI;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -43,11 +42,11 @@ public class TablistProvider implements TabAdapter {
 		Property property = profile.getProperties().get("textures").stream().findFirst().orElse(null);
 
 		// Header
-		lines.add(new TabEntry(1, 1, "&3&lWaterMC").setPing(-1));
+		lines.add(new TabEntry(1, 1, "&3&lWaterMC").setSkin(Skin.CREEPER_SKIN).setPing(-1));
 		try {
 			lines.add(new TabEntry(1, 2, "&7Jugadores: &f" + this.plugin.getNetworkTotalPlayer("BUNGEE", true) + "&7/&f2,500").setPing(-1));
 		} catch (Exception e) {
-			lines.add(new TabEntry(1, 2, "&7Jugadores: &cERROR();&7/&f2,500").setPing(-1));
+			lines.add(new TabEntry(1, 2, "&7Jugadores: &c≠_FETCHED&7/&f2,500").setPing(-1));
 		}
 
 		// Player Info
@@ -71,12 +70,11 @@ public class TablistProvider implements TabAdapter {
 		// Servers
 		lines.add(new TabEntry(1, 8, "&3&lServidores").setPing(-1));
 
-		lines.add(new TabEntry(0, 10, "&3&lPractice").setPing(-1).setSkin(Skin.NO_PING_SKIN));
-		//lines.add(new TabEntry(0, 11, "&7Jugadores: " + this.plugin.getServerPlayers().get("practice")).setPing(-1));
-		lines.add(new TabEntry(0, 11, "&cOffline").setPing(-1));
+		lines.add(new TabEntry(0, 10, "&3&lPractice").setPing(-1).setSkin(Skin.PING_SKIN));
+		lines.add(new TabEntry(0, 11, "&7Jugadores: " + this.plugin.getServerPlayers().get("practice")).setPing(-1));
 
-		lines.add(new TabEntry(1, 10, "&3&lSkyWars").setPing(-1).setSkin(Skin.PING_SKIN));
-		lines.add(new TabEntry(1, 11, "&7Jugadores: " + this.plugin.getServerPlayers().get("practice")).setPing(-1));
+		lines.add(new TabEntry(1, 10, "&3&lSkyWars").setPing(-1).setSkin(Skin.NO_PING_SKIN));
+		lines.add(new TabEntry(1, 11, "&cOffline").setPing(-1));
 
 		lines.add(new TabEntry(2, 10, "&3&lSkyKits").setPing(-1).setSkin(Skin.PING_SKIN));
 		lines.add(new TabEntry(2, 11, "&7Jugadores: " + this.plugin.getServerPlayers().get("dev")).setPing(-1));
@@ -91,7 +89,7 @@ public class TablistProvider implements TabAdapter {
 		lines.add(new TabEntry(2, 14, "&7Jugadores: " + this.plugin.getServerPlayers().get("HCK")).setPing(-1));
 
 		// Footer
-		lines.add(new TabEntry(0, 17, "&a&lTienda").setPing(-1).setSkin(Skin.CROWN_SKIN));
+		lines.add(new TabEntry(0, 17, "&a&lTienda").setPing(-1).setSkin(Skin.DOLAR_SKIN));
 		lines.add(new TabEntry(1, 17, "&b&lTwitter").setPing(-1).setSkin(Skin.TWITTER_SKIN));
 		lines.add(new TabEntry(2, 17, "&9&lDiscord").setPing(-1).setSkin(Skin.DISCORD_SKIN));
 

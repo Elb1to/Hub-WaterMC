@@ -3,6 +3,7 @@ package me.elb1to.watermc.hub.user.ui.selector.buttons;
 import me.elb1to.watermc.hub.Hub;
 import me.elb1to.watermc.hub.impl.Queue;
 import me.elb1to.watermc.hub.user.NewHubPlayer;
+import me.elb1to.watermc.hub.utils.CC;
 import me.elb1to.watermc.hub.utils.extra.ItemBuilder;
 import me.elb1to.watermc.hub.utils.menu.Button;
 import org.bukkit.Material;
@@ -48,10 +49,16 @@ public class HCKButton extends Button {
 	public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
 		player.closeInventory();
 
+		NewHubPlayer newHubPlayer = Hub.getInstance().getHubPlayerManager().getPlayerData(player.getUniqueId());
+		newHubPlayer.setClickedHCFServer("HCK");
+		player.sendMessage("[Debug] Clicked Server == " + newHubPlayer.getClickedHCFServer());
+
 		if (Hub.getInstance().getQueueManager().isQueueing(player)) {
 			playFail(player);
+			player.sendMessage(CC.translate("&cYa estás en cola!"));
 			return;
 		}
+
 		playSuccess(player);
 		player.performCommand("queue join HCK");
 	}
